@@ -1,0 +1,14 @@
+@!button({
+  text,
+  type: type || 'button',
+  class: [
+    'cursor-pointer rounded-lg max-h-[37px] px-[10px] py-[20px] flex items-center justify-center transition-colors',
+    variant === 'secondary'
+      ? 'bg-surface text-foreground border border-border hover:bg-border'
+      : variant === 'ghost'
+        ? 'bg-transparent text-primary-text hover:bg-surface'
+        : 'bg-primary text-primary-foreground hover:bg-primary-hover',
+    fullWidth ? 'w-full' : '',
+    $props.get('class') || '',
+  ].join(' '),
+})

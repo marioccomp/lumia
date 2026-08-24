@@ -1,0 +1,132 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+
+@import 'tailwindcss';
+@source "../views";
+
+@theme {
+  --font-sans: 'Inter', sans-serif;
+}
+
+:root {
+  /* superfícies */
+  --background: #ffffff; /* bg/base */
+  --surface: #eff5f7; /* bg/surface        — áreas rebaixadas: campo de busca, caixa de descrição */
+  --card: #ffffff; /* bg/surface-raised — cartões elevados, modais, dropdown */
+
+  /* texto */
+  --foreground: #111c21; /* text/primary */
+  --muted-foreground: #556b72; /* text/muted */
+
+  /* marca */
+  --primary: #0e7490; /* accent/default    — preenchimento de botão */
+  --primary-foreground: #ffffff; /* text/on-accent    — texto SOBRE o preenchimento */
+  --primary-hover: #0b5c73; /* accent/emphasis */
+  --primary-text: #0e7490; /* accent/foreground — ciano usado COMO texto (link, eyebrow) */
+
+  /* traços e formulários */
+  --border: #d8e4e8; /* border/subtle */
+  --ring: #0e7490; /* accent/foreground — anel de foco */
+  --input: #eff5f7; /* bg/surface */
+  --input-foreground: #111c21; /* text/primary — valor digitado */
+  --input-placeholder: #556b72; /* text/muted */
+
+  /* estados */
+  --success: #16a34a; /* feedback/success */
+  --live: #e5484d; /* feedback/live */
+  --live-foreground: #ffffff; /* text/on-live */
+  --warning: #d97706; /* feedback/warning */
+
+  /* raios — os mesmos usados nos componentes do Figma */
+  --radius-control: 10px; /* botão, campo, chip de busca */
+  --radius-card: 16px; /* card de vídeo/curso */
+  --radius-media: 10px; /* thumbnail dentro do card */
+}
+
+.dark {
+  --background: #08151a;
+  --surface: #111c21;
+  --card: #1a262b;
+
+  --foreground: #f6fafb;
+  --muted-foreground: #94a6ac;
+
+  --primary: #22d3ee;
+  --primary-foreground: #08151a; /* ⚠️ escuro no dark, não branco — ver nota abaixo */
+  --primary-hover: #67e8f9;
+  --primary-text: #67e8f9;
+
+  --border: #26343a;
+  --ring: #67e8f9;
+  --input: #1a262b;
+  --input-foreground: #f6fafb;
+  --input-placeholder: #94a6ac;
+
+  --success: #4ade80;
+  --live: #ff6369;
+  --live-foreground: #ffffff;
+  --warning: #ffb25c;
+}
+
+/* ============================================================
+   Exposição para o Tailwind.
+   `inline` é obrigatório: faz o utilitário resolver a variável em
+   tempo de uso, que é o que permite trocar de tema sem recompilar.
+   ============================================================ */
+
+@theme inline {
+  --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-card: var(--card);
+
+  --color-foreground: var(--foreground);
+  --color-muted-foreground: var(--muted-foreground);
+
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-text: var(--primary-text);
+
+  --color-border: var(--border);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-input-foreground: var(--input-foreground);
+  --color-input-placeholder: var(--input-placeholder);
+
+  --color-success: var(--success);
+  --color-live: var(--live);
+  --color-live-foreground: var(--live-foreground);
+  --color-warning: var(--warning);
+
+  --radius-control: var(--radius-control);
+  --radius-card: var(--radius-card);
+  --radius-media: var(--radius-media);
+
+  --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+}
+
+/* ============================================================
+   Base
+   ============================================================ */
+
+@layer base {
+  * {
+    border-color: var(--border);
+  }
+
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  ::placeholder {
+    color: var(--input-placeholder);
+  }
+
+  /* foco visível e consistente em tudo que é interativo */
+  :focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+  }
+}

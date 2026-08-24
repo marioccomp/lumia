@@ -1,0 +1,67 @@
+<header class="bg-[#F5F6F8] px-10 py-5 border-b border-gray-300">
+  <div class="grid grid-cols-[240px_minmax(0,1fr)_240px] items-center gap-6">
+    <div class="shrink-0">
+      @link({ route: 'home', text: 'Home' })
+        <img
+          src="{{ asset('resources/assets/logo-mark.svg') }}"
+          alt="Logo"
+          class="h-[40px] w-auto"
+        />
+        {{--
+          <svg
+          width="auto"
+          height="18"
+          viewBox="0 0 413 38"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          >
+          <path
+          d="M382.5 37.5v-30h7.5V0h15v7.5h7.5v30H405v-15h-15v15h-7.5ZM390 15h15V7.8h-15V15ZM360 37.5V0h7.5v37.5H360ZM315 37.5V0h22.5v7.5h7.5V30h-7.5v7.5H315Zm7.5-7.5h14.7V7.5h-14.7V30ZM277.5 37.5V0H300v7.5h-15V15h15v7.5h-15V30h15v7.5h-22.5ZM225 37.5V0h7.5v7.5h7.5V15h7.5v7.5H240V15h-7.5v22.5H225Zm30 0V15h-7.5V7.5h7.5V0h7.5v37.5H255ZM180 37.5V0h22.5v7.5h7.5V15h-7.5v15h7.5v7.5h-7.5V30H195v-7.5h-7.5v15H180Zm7.5-22.5h14.7V7.5h-14.7V15ZM142.5 37.5V0H165v7.5h-15V15h15v7.5h-15V30h15v7.5h-22.5ZM97.5 37.5V0H120v7.5h7.5V15H120v7.5h-15v15h-7.5ZM105 15h14.7V7.5H105V15ZM60 37.5V15h-7.5V7.5H45V0h7.5v7.5H60V15h7.5v22.5H60Zm15-30V0h7.5v7.5H75ZM67.5 15V7.5H75V15h-7.5ZM0 37.5V0h7.5v15h15V0H30v37.5h-7.5v-15h-15v15H0Z"
+          fill="currentColor"
+          />
+          </svg>
+        --}}
+      @end
+    </div>
+    @form({
+      class: 'w-full flex justify-center',
+    })
+      <div class="relative w-full max-w-3xl">
+        <input
+          type="search"
+          placeholder="🔍 Buscar vídeos e cursos..."
+          name="q"
+          class="w-full border-1 border-gray-300 rounded-lg px-4 py-2 pr-20 bg-white focus:outline-none"
+        />
+        <button
+          type="submit"
+          class="shrink-0 absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer"
+        >
+          Buscar
+        </button>
+      </div>
+    @end
+
+    <nav class="flex items-center gap-5 shrink-0">
+      @if(auth.user)
+        @!avatar({ initials: auth.user.initials })
+        @form({ route: 'session.destroy', method: 'POST' })
+          @!button({ text: 'Logout' })
+        @end
+      @else
+        @!link({
+          route: 'session.create',
+          text: 'Entrar',
+          class:
+            'text-base font-medium text-[#5B5BF0] hover:text-[#4848D8] transition-colors',
+        })
+        @!link({
+          route: 'new_account.create',
+          text: 'Criar conta',
+          class:
+            'text-base font-medium rounded-xl px-6 py-3 bg-[#5B5BF0] text-white hover:bg-[#4D4DE0] transition-colors',
+        })
+      @end
+    </nav>
+  </div>
+</header>

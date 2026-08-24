@@ -1,0 +1,47 @@
+@layout()
+  @auth.card({
+    eyebrow: "Bem-vindo de volta",
+    title: "Entre na sua conta",
+    description: "Continue de onde parou e acompanhe seu processo"
+  })
+
+      <div class="w-full max-w-md">
+        @form({ route: 'session.store', method: 'POST', class: 'flex flex-col w-full' })
+          @!ui.input({
+            name: 'email',
+            label: 'E-mail',
+            type: 'email',
+            placeholder: 'voce@exemplo.com'
+          })
+
+          @!ui.input({
+            name: 'password',
+            label: 'Senha',
+            type: "password",
+            placeholder: "Digite sua senha"
+          })
+
+          <div class="flex items-center justify-between my-5 ">
+            <div class="flex items-center gap-1">
+              <input type="checkbox" name="keep" id="keep" />
+              <label for="keep" class="text-xs text-[#556B72]">Manter conectado</label>
+            </div>
+            <a href="http://" class="text-xs text-[#0E7490]">Esqueci minha senha</a>
+          </div>
+
+          @!ui.button({
+            text: "Entrar",
+            type: "submit",
+            variant: "primary",
+            fullWidth: true
+          })
+
+          @!auth.footer({
+            text: "Ainda não tem conta?",
+            linkText: "Criar conta"
+          })
+        @end
+      </div>
+    </div>
+@end
+@end

@@ -1,0 +1,17 @@
+@let(sizes = {
+  sm: { mark: 'h-5 w-5', text: 'text-sm' },
+  md: { mark: 'h-6 w-6', text: 'text-base' },
+  lg: { mark: 'h-9 w-9', text: 'text-2xl' },
+})
+@let(s = sizes[size] ?? sizes.md)
+
+<a
+  href="/"
+  class="inline-flex items-center gap-2.5 {{ $props.get('class') ?? '' }}"
+  aria-label="Lumio — página inicial"
+>
+  @!logo({ class: `${s.mark} text-primary-text shrink-0` })
+  @if(!(markOnly ?? false))
+    <span class="{{ s.text }} font-semibold tracking-tight text-foreground">Lumio</span>
+  @end
+</a>

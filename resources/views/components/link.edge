@@ -11,7 +11,7 @@
 <a {{
   $props
     .except(['href', 'text', 'route', 'routeParams', 'routeOptions'])
-    .merge({ href: linkHref, class: classes })
+    .merge({ href: linkHref, class: classes, 'aria-current': activeClass ? 'page' : false })
     .toAttrs()
 }}>
   {{{ linkText }}}

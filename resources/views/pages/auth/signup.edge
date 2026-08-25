@@ -1,48 +1,45 @@
 @layout()
-  <div class="form-container">
-    <div>
-      <h1>Signup</h1>
-      <p>Enter your details below to create your account</p>
-    </div>
+  @auth.card({
+    eyebrow: 'Comece agora',
+    title: 'Crie sua conta',
+    description: 'Organize seus cursos, salve vídeos e acompanhe cada conquista',
+  })
+    <div class="w-full max-w-md">
+      @form({ route: 'new_account.store', method: 'POST', class: 'flex flex-col gap-2' })
+        @!ui.input({
+          name: 'fullName',
+          label: 'Nome completo',
+          placeholder: 'Como devemos chamar você?',
+        })
+        @!ui.input({
+          name: 'email',
+          label: 'E-mail',
+          placeholder: 'voce@exemplo.com',
+        })
+        @!ui.input({
+          name: 'password',
+          label: 'Senha',
+          placeholder: 'Crie uma senha forte',
+        })
+        @!ui.input({
+          name: 'passwordConfirmation',
+          label: 'Confirmar senha',
+          placeholder: 'Digite a senha novamente',
+        })
 
-    <div>
-      @form({ route: 'new_account.store', method: 'POST' })
-        <div>
-          @field.root({ name: 'fullName' })
-            @!field.label({ text: 'Full name' })
-            @!input.control()
-            @!field.error()
-          @end
+        <div class="flex items-center gap-[4px] my-5 ">
+          <input type="checkbox" name="keep" id="keep" />
+          <label for="keep" class="text-xs text-muted-foreground">
+            Li e aceito os Termos de Uso e a Política de Privacidade
+          </label>
         </div>
-
-        <div>
-          @field.root({ name: 'email' })
-            @!field.label({ text: 'Email' })
-            @!input.control({ type: 'email', autocomplete: 'email' })
-            @!field.error()
-          @end
-        </div>
-
-        <div>
-          @field.root({ name: 'password' })
-            @!field.label({ text: 'Password' })
-            @!input.control({ type: 'password', autocomplete: 'new-password' })
-            @!field.error()
-          @end
-        </div>
-
-        <div>
-          @field.root({ name: 'passwordConfirmation' })
-            @!field.label({ text: 'Confirm password' })
-            @!input.control({ type: 'password', autocomplete: 'new-password' })
-            @!field.error()
-          @end
-        </div>
-
-        <div>
-          @!button({ text: 'Sign up', type: 'submit' })
-        </div>
+        @!ui.button({
+          text: 'Criar conta',
+          variant: 'primary',
+          type: 'submit',
+          fullWidth: true,
+        })
       @end
     </div>
-  </div>
+  @end
 @end

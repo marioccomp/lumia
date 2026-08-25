@@ -1,12 +1,8 @@
-<header class="bg-[#F5F6F8] px-10 py-5 border-b border-gray-300">
-  <div class="grid grid-cols-[240px_minmax(0,1fr)_240px] items-center gap-6">
-    <div class="shrink-0">
+<header class="bg-background px-10 py-5 border-b">
+  <div class="flex items-center gap-[32px]">
+    <div class="shrink-0 flex">
       @link({ route: 'home', text: 'Home' })
-        <img
-          src="{{ asset('resources/assets/logo-mark.svg') }}"
-          alt="Logo"
-          class="h-[40px] w-auto"
-        />
+        @!brand()
         {{--
           <svg
           width="auto"
@@ -23,26 +19,50 @@
         --}}
       @end
     </div>
+    <ul class="flex gap-8">
+      <li>
+        @!ui.navLink({
+          href: '/',
+          text: 'Explorar',
+        })
+      </li>
+      <li>
+        @!ui.navLink({
+          href: '/videos',
+          text: 'Videos',
+        })
+      </li>
+      <li>
+        @!ui.navLink({
+          href: '/cursos',
+          text: 'Cursos',
+        })
+      </li>
+    </ul>
     @form({
-      class: 'w-full flex justify-center',
+      class: 'relative flex-1 min-w-0 max-w-md ',
     })
-      <div class="relative w-full max-w-3xl">
-        <input
-          type="search"
-          placeholder="🔍 Buscar vídeos e cursos..."
-          name="q"
-          class="w-full border-1 border-gray-300 rounded-lg px-4 py-2 pr-20 bg-white focus:outline-none"
-        />
-        <button
-          type="submit"
-          class="shrink-0 absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer"
-        >
-          Buscar
-        </button>
-      </div>
+      @!ui.input({
+        type: 'search',
+        name: 'search',
+        placeholder: 'Buscar',
+        icon: 'icon-[lucide--search]',
+      })
     @end
 
-    <nav class="flex items-center gap-5 shrink-0">
+    <nav class="flex items-center gap-5 shrink-0 ml-auto">
+      <button
+        type="button"
+        x-data
+        @click="$store.theme.toggle()"
+        class="cursor-pointer text-lg px-2 py-1 text-muted-foreground "
+        aria-label="Alternar tema"
+      >
+        <span
+          :class="$store.theme.dark ? 'icon-[lucide--sun]' : 'icon-[lucide--moon]'"
+          class="size-5 block"
+        ></span>
+      </button>
       @if(auth.user)
         @!avatar({ initials: auth.user.initials })
         @form({ route: 'session.destroy', method: 'POST' })
@@ -52,14 +72,13 @@
         @!link({
           route: 'session.create',
           text: 'Entrar',
-          class:
-            'text-base font-medium text-[#5B5BF0] hover:text-[#4848D8] transition-colors',
+          class: 'text-base font-medium text-foreground transition-colors',
         })
         @!link({
           route: 'new_account.create',
           text: 'Criar conta',
           class:
-            'text-base font-medium rounded-xl px-6 py-3 bg-[#5B5BF0] text-white hover:bg-[#4D4DE0] transition-colors',
+            'text-base font-medium rounded-xl px-6 py-3 bg-primary text-primary-foreground transition-colors',
         })
       @end
     </nav>

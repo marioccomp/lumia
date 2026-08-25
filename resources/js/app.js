@@ -17,4 +17,14 @@ Alpine.data('alert', function () {
   }
 })
 
+Alpine.store('theme', {
+  dark: document.documentElement.classList.contains('dark'),
+
+  toggle() {
+    this.dark = !this.dark // inverte o estado
+    document.documentElement.classList.toggle('dark', this.dark) // aplica no <html>
+    localStorage.setItem('theme', this.dark ? 'dark' : 'light') // memoriza no navegador
+  },
+})
+
 Alpine.start()

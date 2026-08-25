@@ -1,0 +1,14 @@
+<main class="flex flex-col border w-[280px] h-[257px] pt-[8px] px-[8px] pb-[12px]">
+  <div class="relative bg-surface w-[264px] h-[148px]">
+    <img src="" alt="" />
+    @if(course)
+      <p class="absolute top-2 left-2">Curso</p>
+      <p class="text-center">60%</p>
+    @end
+  </div>
+  <h2>{{ title }}</h2>
+  <div>
+    <p>{{ channel }} · {{ duration }}</p>
+    <p>{{ views }} visualizações · há {{ postedAt }}</p>
+  </div>
+</main>

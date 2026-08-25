@@ -64,7 +64,11 @@
         ></span>
       </button>
       @if(auth.user)
-        @!avatar({ initials: auth.user.initials })
+        @!avatar({
+          initials: auth.user.initials,
+          class:
+            'bg-primary rounded-2xl w-[30px] h-[30px] text-primary-foreground flex justify-center items-center font-[600] text-xs',
+        })
         @form({ route: 'session.destroy', method: 'POST' })
           @!button({ text: 'Logout' })
         @end

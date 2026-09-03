@@ -28,3 +28,14 @@ router
     router.post('logout', [controllers.Session, 'destroy'])
   })
   .use(middleware.auth())
+
+router.get('/health/live', [controllers.HealthChecks, 'live'])
+
+router
+  .get('/health/ready', [controllers.HealthChecks, 'ready'])
+  .use(({ request, response }, next) => {
+    if (request.header('x-monitoring-secret') === 'some_secret_value') {
+      return next()
+    }
+    return response.unauthorized({ message: 'Unauthorized access' })
+  })

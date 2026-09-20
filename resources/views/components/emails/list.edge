@@ -1,0 +1,27 @@
+{{--
+  Lista de benefícios: uma linha de tabela por item, sem <ul>.
+  O "check" é a entidade &#10003; — ícone por SVG ou máscara CSS o Gmail remove.
+
+  Props: items (array de strings)
+--}}
+
+@let(items = $props.get('items', []))
+
+@if(items.length)
+  <tr>
+    <td style="padding-bottom: 28px;">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"
+        style="font-family: -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 14px; line-height: 21px; color: #111c21;">
+        @each((item, index) in items)
+          <tr>
+            <td width="22" valign="top"
+              style="width: 22px; color: #0e7490; font-size: 14px; line-height: 21px;">&#10003;</td>
+            <td valign="top"{{{ index === items.length - 1 ? '' : ' style="padding-bottom: 12px;"' }}}>
+              {{ item }}
+            </td>
+          </tr>
+        @end
+      </table>
+    </td>
+  </tr>
+@end

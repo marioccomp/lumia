@@ -1,0 +1,38 @@
+{{--
+  E-mail de boas-vindas. Toda a estrutura mora em components/emails —
+  aqui fica só o conteúdo.
+
+  Variáveis aceitas: user, confirmUrl, siteUrl
+--}}
+
+@let(name = user ? user.fullName : 'Visitante')
+@let(url = confirmUrl ?? 'http://localhost:3333/confirmar/a1b2c3d4')
+@let(site = siteUrl ?? 'http://localhost:3333/')
+
+@emails.body({
+  subject: 'Boas-vindas ao Lumio',
+  preheader: 'Sua conta foi criada. Confirme seu e-mail para começar.',
+  site,
+})
+  @!emails.headerCard({
+    title: `Boas-vindas, ${name}!`,
+    subtitle: 'Sua conta foi criada. Confirme seu e-mail para começar a acompanhar cursos e salvar seu progresso de onde parar.',
+  })
+
+  @!emails.button({
+    url,
+    text: 'Confirmar meu e-mail',
+  })
+
+  @!emails.list({
+    items: [
+      'Assista a vídeos avulsos e cursos completos, no seu ritmo',
+      'Seu progresso fica salvo aula por aula, em qualquer dispositivo',
+      'Crie seu canal e publique seus próprios vídeos e cursos',
+    ],
+  })
+
+  @!emails.divider()
+
+  @!emails.fallbackLink({ url })
+@end

@@ -17,7 +17,7 @@
   </head>
   <body class="font-sans">
     @include('partials/header')
-    <main>
+    <main class="p-5">
       @include('partials/flash_alerts')
       {{{ await $slots.main() }}}
     </main>

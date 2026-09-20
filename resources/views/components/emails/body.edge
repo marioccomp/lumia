@@ -1,0 +1,106 @@
+{{--
+  Shell comum a todos os e-mails: <head>, fundo, marca, cartão branco e rodapé.
+
+  Regras seguidas aqui (e por que):
+  - Layout em <table>, nunca flex/grid — Gmail e Outlook descartam flexbox
+  - Estilo inline em todo elemento — <style> externo é removido por vários clientes
+  - Cores em hex literal — var() e rgb() com barra são descartados pelo Gmail
+  - CTA como <a> dentro de um <td> colorido — <button> não é estilizável em e-mail
+  - Largura máxima de 600px e nada de altura fixa — cabe no celular
+  - Sem SVG e sem ícone por máscara CSS — Gmail remove os dois
+
+  Props:
+  - subject: vai no <title>
+  - preheader: trecho que o Gmail mostra na lista, antes de abrir o e-mail
+  - site: URL absoluta do site, usada na marca e no rodapé
+
+  Slot main: as <tr> que preenchem o cartão branco
+--}}
+
+@let(subject = $props.get('subject', 'Lumio'))
+@let(preheader = $props.get('preheader', ''))
+@let(site = $props.get('site', 'http://localhost:3333/'))
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="pt-BR">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="x-apple-disable-message-reformatting" />
+    <meta name="color-scheme" content="light" />
+    <meta name="supported-color-schemes" content="light" />
+    <title>{{ subject }}</title>
+
+    <style>
+      /* Só o que precisa de media query mora aqui. O juice preserva este bloco. */
+      @media only screen and (max-width: 620px) {
+        .card-pad { padding: 24px !important; }
+        .outer-pad { padding: 16px !important; }
+        .h1 { font-size: 20px !important; line-height: 28px !important; }
+      }
+    </style>
+  </head>
+
+  <body style="margin: 0; padding: 0; background-color: #eff5f7;">
+    {{-- Texto de pré-visualização: aparece na lista do Gmail, invisível no corpo --}}
+    <div style="display: none; max-height: 0; overflow: hidden; mso-hide: all;">
+      {{ preheader }}
+    </div>
+
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"
+      style="background-color: #eff5f7;">
+      <tr>
+        <td align="center" class="outer-pad" style="padding: 32px 16px;">
+
+          <table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0"
+            style="width: 600px; max-width: 100%;">
+
+            {{--
+              Marca. Um logo de verdade precisa ser um PNG hospedado em URL absoluta:
+              <img src="https://seudominio.com.br/logo.png" width="120" alt="Lumio"
+                   style="display:block;border:0;" />
+              SVG não renderiza no Gmail, por isso aqui vai só o texto.
+            --}}
+            <tr>
+              <td align="center" style="padding-bottom: 24px;">
+                <a href="{{ site }}"
+                  style="font-family: -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 20px; font-weight: 600; letter-spacing: -0.5px; color: #111c21; text-decoration: none;">
+                  Lumio
+                </a>
+              </td>
+            </tr>
+
+            {{-- Cartão branco: o conteúdo de cada e-mail entra aqui como <tr> --}}
+            <tr>
+              <td class="card-pad"
+                style="background-color: #ffffff; border: 1px solid #d8e4e8; border-radius: 12px; padding: 40px;">
+
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                  {{{ await $slots.main() }}}
+                </table>
+
+              </td>
+            </tr>
+
+            {{-- Rodapé --}}
+            <tr>
+              <td align="center"
+                style="font-family: -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 12px; line-height: 18px; color: #556b72; padding: 24px 8px 0 8px;">
+                Você recebeu este e-mail porque tem uma conta no Lumio.<br />
+                <span style="display: inline-block; padding-top: 6px;">
+                  <a href="{{ site }}notificacoes" style="color: #556b72; text-decoration: underline;">Gerenciar notificações</a>
+                  &nbsp;·&nbsp;
+                  <a href="{{ site }}ajuda" style="color: #556b72; text-decoration: underline;">Ajuda</a>
+                  &nbsp;·&nbsp;
+                  <a href="{{ site }}" style="color: #556b72; text-decoration: underline;">lumio.com.br</a>
+                </span>
+              </td>
+            </tr>
+
+          </table>
+
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>

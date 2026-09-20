@@ -1,14 +1,25 @@
-<main class="flex flex-col border w-[280px] h-[257px] pt-[8px] px-[8px] pb-[12px]">
-  <div class="relative bg-surface w-[264px] h-[148px]">
-    <img src="" alt="" />
+<main class="flex flex-col border-1 p-2 pb-3 rounded-2xl gap-2.5">
+  <div class="relative bg-surface rounded-[10px] overflow-hidden aspect-video">
+    <img
+      class="w-full h-full object-cover "
+      src="https://m.media-amazon.com/images/I/71Tf4-kJHhL._UF1000,1000_QL80_.jpg"
+      alt=""
+    />
     @if(course)
       <p class="absolute top-2 left-2">Curso</p>
       <p class="text-center">60%</p>
     @end
   </div>
-  <h2>{{ title }}</h2>
-  <div>
-    <p>{{ channel }} · {{ duration }}</p>
-    <p>{{ views }} visualizações · há {{ postedAt }}</p>
+  {{-- Falta adaptar a parte abaixo para cursos tambem, seguindo o que esta no figma --}}
+  <div class="flex flex-col gap-[5px]">
+    <h2 class="font-semibold text-sm leading-[20px]">{{ title }}</h2>
+    <div class="flex flex-col gap-[1px]">
+      <p class="font-normal text-muted-foreground text-xs">{{ channel }} · {{ duration }}</p>
+      <p class="font-normal text-muted-foreground text-xs">
+        {{ views }}
+        visualizações · há
+        {{ postedAt }}
+      </p>
+    </div>
   </div>
 </main>

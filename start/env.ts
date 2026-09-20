@@ -33,5 +33,8 @@ export default await Env.create(new URL('../', import.meta.url), {
   MAIL_MAILER: Env.schema.enum(['resend'] as const),
   MAIL_FROM_NAME: Env.schema.string(),
   MAIL_FROM_ADDRESS: Env.schema.string(),
-  RESEND_API_KEY: Env.schema.string()
+  RESEND_API_KEY: Env.schema.string(),
+
+  // Storage
+  STORAGE_DRIVER: Env.schema.enum(['local'] as const),
 })

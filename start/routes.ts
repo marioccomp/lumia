@@ -26,6 +26,8 @@ router
 router
   .group(() => {
     router.post('logout', [controllers.Session, 'destroy'])
+    router.get('/videos/new', [controllers.Videos, 'create'])
+    router.post('/videos', [controllers.Videos, 'store'])
   })
   .use(middleware.auth())
 

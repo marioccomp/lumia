@@ -1,4 +1,5 @@
 import { defineConfig } from '@adonisjs/shield'
+import app from '@adonisjs/core/services/app'
 
 /**
  * Security configuration using Shield.
@@ -45,7 +46,7 @@ const shieldConfig = defineConfig({
      * Routes that should be excluded from CSRF protection.
      * Useful for webhooks or API endpoints that use other auth methods.
      */
-    exceptRoutes: [],
+    exceptRoutes: app.inDev ? ['/login', '/videos'] : [],
 
     /**
      * Enable XSRF-TOKEN cookie for JavaScript frameworks.

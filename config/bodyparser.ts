@@ -88,13 +88,13 @@ const bodyParserConfig = defineConfig({
      * Routes where file uploads should be processed manually.
      * Useful when you need custom file handling logic.
      */
-    processManually: [],
+    processManually: ['/videos'],
 
     /**
      * Maximum limit of data to parse including all files
      * and fields
      */
-    limit: '20mb',
+    limit: '500mb',
 
     /**
      * Content types that should be parsed as multipart form data.

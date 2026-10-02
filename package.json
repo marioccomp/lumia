@@ -68,6 +68,7 @@
     "@adonisjs/shield": "^9.0.0",
     "@adonisjs/static": "^2.0.1",
     "@adonisjs/vite": "^6.0.0",
+    "@azure/storage-blob": "^12.34.0",
     "@tailwindcss/vite": "^4.3.3",
     "@vinejs/vine": "^4.4.0",
     "better-sqlite3": "^13.0.3",

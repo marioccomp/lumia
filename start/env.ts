@@ -36,5 +36,7 @@ export default await Env.create(new URL('../', import.meta.url), {
   RESEND_API_KEY: Env.schema.string(),
 
   // Storage
-  STORAGE_DRIVER: Env.schema.enum(['local'] as const),
+  STORAGE_DRIVER: Env.schema.enum(['local', 'azure'] as const),
+  AZURE_STORAGE_CONNECTION_STRING: Env.schema.string.optional(),
+  AZURE_STORAGE_CONTAINER: Env.schema.string.optional(),
 })

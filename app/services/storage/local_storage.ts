@@ -33,7 +33,7 @@ export default class LocalStorage implements StorageDriver {
     await rm(dest, { force: true })
   }
 
-  async url(key: string): Promise<string> {
+  url(key: string): string {
     return `/media/${key}`
   }
 }

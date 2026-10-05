@@ -1,8 +1,9 @@
 @!button({
+  ...$props.except(['text', 'type', 'class', 'variant', 'fullWidth']).all(),
   text,
   type: type || 'button',
   class: [
-    'cursor-pointer rounded-lg max-h-[37px] px-[10px] py-[20px] flex items-center justify-center transition-colors',
+    'cursor-pointer rounded-[10px] max-h-[37px] px-[10px] py-[20px] flex items-center justify-center transition-colors',
     variant === 'secondary'
       ? 'bg-surface text-foreground border border-border hover:bg-border'
       : variant === 'ghost'

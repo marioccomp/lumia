@@ -7,11 +7,13 @@ import Video from '#models/video'
 
 export default class VideosController {
   async create({ view }: HttpContext) {
-    // return view.render('pages/auth/login')
+    return view.render('pages/videos/create')
   }
 
   async store({ request, auth, response, session }: HttpContext) {
     let key: string | undefined
+
+    const user = auth.user
 
     request.multipart.onFile(
       'video',
@@ -19,7 +21,7 @@ export default class VideosController {
       async (part, reporter) => {
         part.pause()
         part.on('data', reporter)
-        key = `videos/${randomUUID()}${path.extname(part.file.clientName).toLowerCase()}`
+        key = `${user?.id}/videos/${randomUUID()}${path.extname(part.file.clientName).toLowerCase()}`
 
         await storage.put(key, part)
       }

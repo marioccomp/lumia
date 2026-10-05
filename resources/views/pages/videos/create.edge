@@ -1,0 +1,64 @@
+@layout()
+  <div class="flex flex-col gap-[10px]">
+    @!video.header({
+      title: 'Enviar vídeo',
+      subtitle:
+        'O arquivo começa a subir assim que você escolher — você preenche os detalhes enquanto isso.',
+    })
+
+    <ul class="flex gap-[10px]">
+      <li
+        class="text-xs leading-[15px] py-[6px] px-[12px] bg-surface border border-ring rounded-full"
+      >
+        1. Arquivo
+      </li>
+      <li
+        class="text-xs leading-[15px] py-[6px] px-[12px] bg-surface border border-ring rounded-full"
+      >
+        2. Detalhes
+      </li>
+      <li
+        class="text-xs leading-[15px] py-[6px] px-[12px] bg-surface border border-ring rounded-full"
+      >
+        3. Publicação
+      </li>
+    </ul>
+
+    <div class="flex flex-col items-center">
+      <div
+        class="max-w-[850px] w-full h-[clamp(240px,40dvh,380px)] flex flex-col gap-[14px] rounded-2xl justify-center items-center bg-surface border-2 border-dashed border-"
+      >
+        <div class="bg-background border rounded-full size-14 flex items-center justify-center">
+          <span class="size-6 icon-[lucide--upload]"></span>
+        </div>
+
+        <div class="flex flex-col items-center gap-[5px]">
+          <h3 class="font-semibold text-base text-foreground leading-[19px]">
+            Arraste seu vídeo aqui
+          </h3>
+          <p class="text-muted-foreground text-[13px] leading-[16px]">
+            ou clique para escolher um arquivo
+          </p>
+        </div>
+        <div x-data>
+          <input
+            type="file"
+            name="video"
+            id="video-input"
+            accept="video/mp4,video/quicktime"
+            class="sr-only"
+            x-ref="videoInput"
+          />
+          @!ui.button({
+            text: 'Escolher arquivo',
+            class: 'font-semibold',
+            '@click': '$refs.videoInput.click()',
+          })
+        </div>
+        <p class="text-muted-foreground leading-[14px] text-[11.5px]">
+          MP4 ou MOV · até 500 MB · máx. 20 minutos
+        </p>
+      </div>
+    </div>
+  </div>
+@end

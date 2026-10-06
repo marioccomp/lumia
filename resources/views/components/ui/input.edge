@@ -14,7 +14,7 @@
         ></span>
       @end
       @!input.control({
-        type: type | 'text',
+        type: type ?? 'text',
         class: `bg-surface rounded-[10px] w-full py-[12px] border-1 ${icon ? 'pl-8.5 pr-3' : 'px-[10px]'}`,
         placeholder: placeholder,
       })

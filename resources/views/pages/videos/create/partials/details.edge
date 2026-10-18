@@ -1,35 +1,17 @@
-<div class="flex flex-col gap-[10px] hidden" id="step-details">
-  @!video.header({
-    title: 'Detalhes do vídeo',
-  })
-
-  <ul class="flex gap-[10px]">
-    <li class="text-xs leading-[15px] py-[6px] px-[12px] bg-surface border rounded-full">
-      1. Arquivo
-    </li>
-    <li
-      class="text-xs leading-[15px] py-[6px] px-[12px] bg-surface border border-ring rounded-full"
-    >
-      2. Detalhes
-    </li>
-    <li class="text-xs leading-[15px] py-[6px] px-[12px] bg-surface border rounded-full">
-      3. Publicação
-    </li>
-  </ul>
-
+<div class="flex flex-col gap-[10px]" id="step-details">
   <div>
     <form method="POST" id="details-form" class="flex flex-col gap-5">
       {{ csrfField() }}
       @!ui.input({
         label: 'Título',
         placeholder: 'Dê um título ao seu vídeo',
-        footerText: 'Mínimo 3 caracteres · 0/100',
+        footerText: 'Mínimo 3 caracteres · 0/50',
         name: 'title',
       })
       @!ui.input({
         label: 'Descrição',
         placeholder: 'Conte do que se trata o vídeo...',
-        footerText: 'Opcional · 0/5000',
+        footerText: 'Opcional · 0/250',
         name: 'description',
       })
 

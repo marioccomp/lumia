@@ -12,13 +12,11 @@
       1. Arquivo
     </li>
     <li class="text-xs leading-[15px] py-[6px] px-[12px] bg-surface border rounded-full">
-      2. Detalhes
-    </li>
-    <li class="text-xs leading-[15px] py-[6px] px-[12px] bg-surface border rounded-full">
-      3. Publicação
+      2. Publicação
     </li>
   </ul>
 
+  <form method="POST" id="details-form">
   <div class="flex flex-col items-center">
     <div
       class="max-w-[850px] w-full h-[clamp(240px,40dvh,380px)] flex flex-col gap-[14px] rounded-2xl justify-center items-center bg-surface border-2 border-dashed border-"
@@ -43,7 +41,6 @@
           accept="video/mp4,video/quicktime"
           class="sr-only"
           x-ref="videoInput"
-          onchange="uploadVideo(this)"
         />
         @!ui.button({
           text: 'Escolher arquivo',
@@ -55,5 +52,49 @@
         MP4 ou MOV · até 500 MB · máx. 20 minutos
       </p>
     </div>
+    {{ csrfField() }}
+      @!ui.input({
+        label: 'Título',
+        placeholder: 'Dê um título ao seu vídeo',
+        footerText: 'Mínimo 3 caracteres · 0/50',
+        name: 'title',
+      })
+      @!ui.input({
+        label: 'Descrição',
+        placeholder: 'Conte do que se trata o vídeo...',
+        footerText: 'Opcional · 0/250',
+        name: 'description',
+      })
+
+      <select name="courseId">
+        <option value="default" selected>Nenhum — vídeo avulso</option>
+      </select>
+      @!ui.input({
+        type: 'radio',
+        id: 'public',
+        name: 'visibility',
+        value: 'public',
+        label: 'Público',
+        checked: true,
+      })
+      @!ui.input({
+        type: 'radio',
+        id: 'unlisted',
+        name: 'visibility',
+        value: 'unlisted',
+        label: 'Não listado',
+      })
+      @!ui.input({
+        type: 'radio',
+        id: 'private',
+        name: 'visibility',
+        value: 'private',
+        label: 'Privado',
+      })
+      @!ui.button({
+        text: 'Salvar e continuar',
+        type: 'submit',
+      })
+    </form>
   </div>
 </div>

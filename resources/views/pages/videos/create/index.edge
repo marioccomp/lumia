@@ -1,6 +1,8 @@
 @layout()
   @include('pages/videos/create/partials/upload')
-  @include('pages/videos/create/partials/details')
+  {{--
+    @include('pages/videos/create/partials/details')
+  --}}
   <script>
     async function uploadVideo(input) {
       const file = input.files[0];

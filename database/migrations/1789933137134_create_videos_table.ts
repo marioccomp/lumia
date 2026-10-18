@@ -13,6 +13,7 @@ export default class extends BaseSchema {
       table.string('storage_key').notNullable()
       table.string('thumbnail_key').nullable()
       table.integer('duration').nullable()
+      table.enum('visibility', ['public', 'private', 'unlisted']).notNullable().defaultTo('private')
 
       table.timestamp('created_at')
       table.timestamp('updated_at')

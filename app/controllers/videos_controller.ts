@@ -1,19 +1,19 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import { randomUUID } from 'node:crypto'
 import storage from '#services/storage/index'
-import { videoValidator } from '#validators/video'
+import { videoValidator, updateVideoValidator } from '#validators/video'
 import path from 'node:path'
 import Video from '#models/video'
 
 export default class VideosController {
   async create({ view }: HttpContext) {
-    return view.render('pages/videos/create')
+    return view.render('pages/videos/create/index')
   }
 
   async store({ request, auth, response, session }: HttpContext) {
     let key: string | undefined
 
-    const user = auth.user
+    const user = auth.getUserOrFail()
 
     request.multipart.onFile(
       'video',
@@ -30,7 +30,6 @@ export default class VideosController {
       await request.multipart.process()
 
       const data = await request.validateUsing(videoValidator)
-      const user = auth.getUserOrFail()
       const file = request.file('video')
       if (!key || !file || !file.isValid) {
         key ? await storage.delete(key) : ''
@@ -40,7 +39,7 @@ export default class VideosController {
         })
       }
 
-      await Video.create({
+      const video = await Video.create({
         title: data.title,
         description: data.description,
         userId: user.id,
@@ -48,10 +47,27 @@ export default class VideosController {
       })
 
       session.flash('success', 'Video criado com sucesso')
-      return response.redirect().toRoute('home')
+      return response.created({ id: video.id })
     } catch (e) {
       key ? await storage.delete(key) : ''
       throw e
     }
+  }
+
+  async update({ params, request, response, auth }: HttpContext) {
+    const video = await Video.query()
+      .where('id', params.id)
+      .where('userId', auth.getUserOrFail().id)
+      .firstOrFail()
+
+    const payload = await request.validateUsing(updateVideoValidator)
+
+    video.merge(payload)
+
+    await video.save()
+
+    return response.created({
+      id: video.id,
+    })
   }
 }

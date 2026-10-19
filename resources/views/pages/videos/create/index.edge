@@ -1,32 +1,3 @@
 @layout()
   @include('pages/videos/create/partials/upload')
-  {{--
-    @include('pages/videos/create/partials/details')
-  --}}
-  <script>
-    async function uploadVideo(input) {
-      const file = input.files[0];
-      if (!file) return;
-
-      const fd = new FormData();
-      fd.append('title', 'Loading...');
-      fd.append('video', file);
-      fd.append('visibility', 'private');
-
-      const res = await fetch('/videos', {
-        method: 'POST',
-        body: fd,
-      });
-
-      if (!res.ok) return;
-
-      const data = await res.json();
-
-      const stepUpload = document.getElementById('step-upload');
-      const stepDetails = document.getElementById('step-details');
-      stepUpload.classList.add('hidden');
-      stepDetails.classList.remove('hidden');
-      document.getElementById('details-form').action = `/videos/${data.id}?_method=PUT`;
-    }
-  </script>
 @end

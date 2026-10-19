@@ -76,7 +76,8 @@
     "juice": "^12.1.2",
     "luxon": "^3.7.2",
     "reflect-metadata": "^0.2.2",
-    "tailwindcss": "^4.3.3"
+    "tailwindcss": "^4.3.3",
+    "vidstack": "^1.15.7"
   },
   "hotHook": {
     "boundaries": [

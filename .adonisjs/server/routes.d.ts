@@ -11,6 +11,7 @@ export type ScannedRoutes = {
     'session.store': { paramsTuple?: []; params?: {} }
     'session.destroy': { paramsTuple?: []; params?: {} }
     'videos.create': { paramsTuple?: []; params?: {} }
+    'videos.created': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'videos.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'videos.store': { paramsTuple?: []; params?: {} }
     'health_checks.live': { paramsTuple?: []; params?: {} }
@@ -21,6 +22,7 @@ export type ScannedRoutes = {
     'new_account.create': { paramsTuple?: []; params?: {} }
     'session.create': { paramsTuple?: []; params?: {} }
     'videos.create': { paramsTuple?: []; params?: {} }
+    'videos.created': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'health_checks.live': { paramsTuple?: []; params?: {} }
     'health_checks.ready': { paramsTuple?: []; params?: {} }
   }
@@ -29,6 +31,7 @@ export type ScannedRoutes = {
     'new_account.create': { paramsTuple?: []; params?: {} }
     'session.create': { paramsTuple?: []; params?: {} }
     'videos.create': { paramsTuple?: []; params?: {} }
+    'videos.created': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'health_checks.live': { paramsTuple?: []; params?: {} }
     'health_checks.ready': { paramsTuple?: []; params?: {} }
   }

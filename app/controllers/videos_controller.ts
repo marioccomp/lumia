@@ -47,7 +47,7 @@ export default class VideosController {
       })
 
       session.flash('success', 'Video criado com sucesso')
-      return response.created({ id: video.id })
+      return response.redirect().toRoute('videos.created', { id: video.id })
     } catch (e) {
       key ? await storage.delete(key) : ''
       throw e
@@ -69,5 +69,21 @@ export default class VideosController {
     return response.created({
       id: video.id,
     })
+  }
+
+  async created({ params, request, response, auth, view }: HttpContext) {
+    try {
+      const user = auth.getUserOrFail()
+      const id = params.id
+
+      const video = await Video.query().where('id', id).where('user_id', user.id).firstOrFail()
+
+      return view.render('pages/videos/create/created', {
+        video,
+        videoUrl: storage.url(video.storageKey),
+      })
+    } catch (e) {
+      throw e
+    }
   }
 }

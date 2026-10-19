@@ -3,13 +3,17 @@
     <h2>Abaixo você pode ver a lista de vídeos com base nas suas preferências</h2>
   </div>
   <div class="grid gap-4 grid-cols-[repeat(auto-fill,minmax(320px,1fr))]">
-    @!video.card({
-      title: 'Como programar em JavaScript',
-      channel: 'Canal do Guinho',
-      views: '12 mil',
-      duration: '12:34',
-      postedAt: '3 dias',
-    })
+    @each(video in videos)
+      <a href="{{ route('videos.created', { id: video.id }) }}">
+        @!video.card({
+          title: video.title,
+          channel: 'Testando',
+          views: '12 mil',
+          duration: '12:34',
+          postedAt: '5 dias',
+        })
+      </a>
+    @end
     @!video.card({
       title: 'Como programar em JavaScript',
       channel: 'Canal do Guinho',

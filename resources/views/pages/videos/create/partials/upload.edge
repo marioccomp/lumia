@@ -16,7 +16,7 @@
     </li>
   </ul>
 
-  <form method="POST" id="details-form">
+  <form method="POST" action="/videos/new?_csrf={{ csrfToken }}" id="details-form" enctype="multipart/form-data">
   <div class="flex flex-col items-center">
     <div
       class="max-w-[850px] w-full h-[clamp(240px,40dvh,380px)] flex flex-col gap-[14px] rounded-2xl justify-center items-center bg-surface border-2 border-dashed border-"
@@ -38,7 +38,7 @@
           type="file"
           name="video"
           id="video-input"
-          accept="video/mp4,video/quicktime"
+          accept="video/mp4,video/quicktime, video/webm"
           class="sr-only"
           x-ref="videoInput"
         />
@@ -52,7 +52,6 @@
         MP4 ou MOV · até 500 MB · máx. 20 minutos
       </p>
     </div>
-    {{ csrfField() }}
       @!ui.input({
         label: 'Título',
         placeholder: 'Dê um título ao seu vídeo',
@@ -65,10 +64,10 @@
         footerText: 'Opcional · 0/250',
         name: 'description',
       })
+      @if(flashMessages.has('error'))
+    <p>{{ flashMessages.get('error') }}</p>
+  @end
 
-      <select name="courseId">
-        <option value="default" selected>Nenhum — vídeo avulso</option>
-      </select>
       @!ui.input({
         type: 'radio',
         id: 'public',

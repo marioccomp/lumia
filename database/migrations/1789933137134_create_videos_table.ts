@@ -14,6 +14,7 @@ export default class extends BaseSchema {
       table.string('thumbnail_key').nullable()
       table.integer('duration').nullable()
       table.enum('visibility', ['public', 'private', 'unlisted']).notNullable().defaultTo('private')
+      table.boolean('course').defaultTo(false)
 
       table.timestamp('created_at')
       table.timestamp('updated_at')

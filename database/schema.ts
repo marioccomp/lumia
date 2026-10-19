@@ -50,3 +50,20 @@ export class VideoSchema extends BaseModel {
   @column()
   declare visibility: string
 }
+
+export class ViewSchema extends BaseModel {
+  static $columns = ['createdAt', 'id', 'ip', 'updatedAt', 'userId', 'videoId'] as const
+  $columns = ViewSchema.$columns
+  @column.dateTime({ autoCreate: true })
+  declare createdAt: DateTime | null
+  @column({ isPrimary: true })
+  declare id: number
+  @column()
+  declare ip: string
+  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  declare updatedAt: DateTime | null
+  @column()
+  declare userId: number | null
+  @column()
+  declare videoId: number
+}

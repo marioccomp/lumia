@@ -39,4 +39,7 @@ export default await Env.create(new URL('../', import.meta.url), {
   STORAGE_DRIVER: Env.schema.enum(['local', 'azure'] as const),
   AZURE_STORAGE_CONNECTION_STRING: Env.schema.string.optional(),
   AZURE_STORAGE_CONTAINER: Env.schema.string.optional(),
+
+  // CACHE
+  CACHE_STORE: Env.schema.enum(['default', 'memoryOnly'] as const),
 })

@@ -64,6 +64,11 @@
         ></span>
       </button>
       @if(auth.user)
+        <a
+          class="size-5 block icon-[lucide--plus] text-muted-foreground cursor-pointer"
+          aria-label="Adicionar video"
+          href="/videos/new"
+        ></a>
         @!avatar({
           initials: auth.user.initials,
           class:

@@ -4,11 +4,11 @@
   </div>
   <div class="grid gap-4 grid-cols-[repeat(auto-fill,minmax(320px,1fr))]">
     @each(video in videos)
-      <a href="{{ route('videos.created', { id: video.id }) }}">
+      <a href="{{ route('videos.show', { id: video.id }) }}">
         @!video.card({
           title: video.title,
           channel: 'Testando',
-          views: '12 mil',
+          views: video.views,
           duration: '12:34',
           postedAt: '5 dias',
         })

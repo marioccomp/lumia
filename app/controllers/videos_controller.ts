@@ -2,9 +2,12 @@ import type { HttpContext } from '@adonisjs/core/http'
 import { randomUUID } from 'node:crypto'
 import storage from '#services/storage/index'
 import { videoValidator, updateVideoValidator } from '#validators/video'
+import logger from '@adonisjs/core/services/logger'
 import path from 'node:path'
 import Video from '#models/video'
-
+import View from '#models/view'
+import { DateTime } from 'luxon'
+import cache from '@adonisjs/cache/services/main'
 export default class VideosController {
   async create({ view }: HttpContext) {
     return view.render('pages/videos/create/index')
@@ -44,7 +47,12 @@ export default class VideosController {
         description: data.description,
         userId: user.id,
         storageKey: key,
+        visibility: data.visibility,
       })
+
+      if (data.visibility === 'public') {
+        cache.delete({ key: 'home:videos' })
+      }
 
       session.flash('success', 'Video criado com sucesso')
       return response.redirect().toRoute('videos.created', { id: video.id })
@@ -82,6 +90,54 @@ export default class VideosController {
         video,
         videoUrl: storage.url(video.storageKey),
       })
+    } catch (e) {
+      throw e
+    }
+  }
+
+  async show({ params, request, response, auth, view }: HttpContext) {
+    try {
+      const user = auth.user
+      const id = params.id
+      const ip = request.ip()
+
+      const video = await Video.query().where('id', id).where('visibility', 'public').firstOrFail()
+
+      logger.info(video, 'Video encontrado')
+      logger.info(user, 'User encontrado')
+
+      const lastView = await View.query()
+        .where('video_id', id)
+        .where((q) => {
+          q.where('ip', ip)
+          if (user) q.orWhere('user_id', user.id)
+        })
+        .orderBy('created_at', 'desc')
+        .first()
+
+      logger.info(lastView?.createdAt, 'Ultima view do usuario, caso tenha')
+
+      if (lastView?.createdAt) {
+        const minutes = DateTime.now().diff(lastView.createdAt, 'minutes').minutes
+
+        if (minutes > 5) {
+          const newView = {
+            ip,
+            userId: user?.id ?? null,
+            videoId: video.id,
+          }
+          await View.create(newView)
+        }
+      } else {
+        const newView = {
+          ip,
+          userId: user?.id ?? null,
+          videoId: video.id,
+        }
+        await View.create(newView)
+      }
+
+      return view.render('pages/videos/show', { video, videoUrl: storage.url(video.storageKey) })
     } catch (e) {
       throw e
     }

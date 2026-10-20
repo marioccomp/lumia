@@ -33,7 +33,8 @@
     "#database/*": "./database/*.js",
     "#tests/*": "./tests/*.js",
     "#start/*": "./start/*.js",
-    "#config/*": "./config/*.js"
+    "#config/*": "./config/*.js",
+    "#queues/*": "./app/queues/*.js"
   },
   "devDependencies": {
     "@adonisjs/assembler": "^8.4.0",
@@ -73,7 +74,9 @@
     "@tailwindcss/vite": "^4.3.3",
     "@vinejs/vine": "^4.4.0",
     "better-sqlite3": "^13.0.3",
+    "bullmq": "^6.3.17",
     "edge.js": "^6.5.1",
+    "ioredis": "^6.0.0",
     "juice": "^12.1.2",
     "luxon": "^3.7.2",
     "reflect-metadata": "^0.2.2",

@@ -3,8 +3,8 @@ import type { StorageDriver } from './storage_driver.js'
 import path from 'node:path'
 import type { Readable } from 'node:stream'
 import { pipeline } from 'node:stream/promises'
-import { mkdir, rm } from 'node:fs/promises'
-import { createWriteStream } from 'node:fs'
+import { access, mkdir, rm } from 'node:fs/promises'
+import { createReadStream, createWriteStream } from 'node:fs'
 
 export default class LocalStorage implements StorageDriver {
   private baseDir = app.makePath('storage')
@@ -35,5 +35,11 @@ export default class LocalStorage implements StorageDriver {
 
   url(key: string): string {
     return `/media/${key}`
+  }
+
+  async getStream(key: string): Promise<Readable> {
+    const src = this.resolve(key)
+    await access(src)
+    return createReadStream(src)
   }
 }

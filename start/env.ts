@@ -42,4 +42,7 @@ export default await Env.create(new URL('../', import.meta.url), {
 
   // CACHE
   CACHE_STORE: Env.schema.enum(['default', 'memoryOnly'] as const),
+  REDIS_PORT: Env.schema.number(),
+  REDIS_HOST: Env.schema.string(),
+  REDIS_PASSWORD: Env.schema.string(),
 })

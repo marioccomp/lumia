@@ -1,6 +1,6 @@
-import { BlobServiceClient, ContainerClient } from '@azure/storage-blob'
+import { BlobServiceClient, type ContainerClient } from '@azure/storage-blob'
 import type { StorageDriver } from './storage_driver.js'
-import { PassThrough, pipeline, Readable } from 'node:stream'
+import { PassThrough, pipeline, type Readable } from 'node:stream'
 
 export class AzureBlobStorage implements StorageDriver {
   #container: ContainerClient
@@ -30,5 +30,15 @@ export class AzureBlobStorage implements StorageDriver {
 
   url(key: string) {
     return this.#container.getBlockBlobClient(key).url
+  }
+
+  async getStream(key: string): Promise<Readable> {
+    const blob = this.#container.getBlockBlobClient(key)
+    const response = await blob.download(0, undefined, { maxRetryRequests: 5 })
+
+    if (!response.readableStreamBody) {
+      throw new Error(`Blob sem corpo: ${key}`)
+    }
+    return response.readableStreamBody as Readable
   }
 }

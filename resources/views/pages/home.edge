@@ -1,4 +1,5 @@
 @layout()
+<<<<<<< Updated upstream
   <div class="h-10">
     <h2>Abaixo você pode ver a lista de vídeos com base nas suas preferências</h2>
   </div>
@@ -9,4 +10,81 @@
     duration: '12:34',
     postedAt: '3 dias',
   })
+=======
+  <div class="explore-page">
+    @if(auth.user)
+      <section class="continue-assistindo">
+        <div class="section-header">
+          <h2>Continue assistindo</h2>
+          <a href="/videos">Ver todos</a>
+        </div>
+
+        <div class="grid gap-4 grid-cols-[repeat(auto-fill,minmax(320px,1fr))]">
+          @!video.card({
+            title: 'Como programar em JavaScript',
+            channel: 'Canal do Guinho',
+            views: '12 mil',
+            duration: '12:34',
+            postedAt: '3 dias',
+          })
+          @!video.card({
+            title: 'Como programar em JavaScript',
+            channel: 'Canal do Guinho',
+            views: '12 mil',
+            duration: '12:34',
+            postedAt: '3 dias',
+          })
+        </div>
+      </section>
+    @end
+
+    <section class="view-videos">
+      <div class="section-header">
+        <h2>Video que podem te interessar</h2>
+        <a href="/videos">Ver todos</a>
+      </div>
+
+      <div class="grid gap-4 grid-cols-[repeat(auto-fill,minmax(320px,1fr))]">
+        @!video.card({
+          title: 'Como programar em JavaScript',
+          channel: 'Canal do Guinho',
+          views: '12 mil',
+          duration: '12:34',
+          postedAt: '3 dias',
+        })
+        @!video.card({
+          title: 'Como programar em JavaScript',
+          channel: 'Canal do Guinho',
+          views: '12 mil',
+          duration: '12:34',
+          postedAt: '3 dias',
+        })
+      </div>
+    </section>
+
+    <section class="view-cursos">
+      <div class="section-header">
+        <h2>Cursos que você pode gostar</h2>
+        <a href="/cursos">Ver todos</a>
+      </div>
+
+      <div class="grid gap-4 grid-cols-[repeat(auto-fill,minmax(320px,1fr))]">
+        @!video.card({
+          title: 'Como programar em JavaScript',
+          channel: 'Canal do Guinho',
+          views: '12 mil',
+          duration: '12:34',
+          postedAt: '3 dias',
+        })
+        @!video.card({
+          title: 'Como programar em JavaScript',
+          channel: 'Canal do Guinho',
+          views: '12 mil',
+          duration: '12:34',
+          postedAt: '3 dias',
+        })
+      </div>
+    </section>
+  </div>
+>>>>>>> Stashed changes
 @end

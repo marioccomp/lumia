@@ -27,10 +27,10 @@ router
   .group(() => {
     router.post('logout', [controllers.Session, 'destroy'])
     router.get('/videos/new', [controllers.Videos, 'create'])
-    router.get('/videos/:id', [controllers.Videos, 'show']).as('videos.show')
     router.get('/videos/new/:id', [controllers.Videos, 'created']).as('videos.created')
     router.put('/videos/:id', [controllers.Videos, 'update'])
     router.post('/videos/new', [controllers.Videos, 'store'])
+    router.delete('/videos/:id', [controllers.Videos, 'delete'])
   })
   .use(middleware.auth())
 
@@ -44,3 +44,8 @@ router
     }
     return response.unauthorized({ message: 'Unauthorized access' })
   })
+
+router
+  .get('/videos/:id', [controllers.Videos, 'show'])
+  .as('videos.show')
+  .where('id', router.matchers.number())

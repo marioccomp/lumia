@@ -1,0 +1,15 @@
+<dialog
+  id="confirm-modal"
+  class="m-auto w-full max-w-md rounded-2xl bg-card text-foreground border border-border shadow-xl backdrop:bg-black/50"
+>
+  <header data-modal-title class="px-6 py-4 text-lg font-semibold border-b border-border"></header>
+
+  <div class="px-6 py-4">
+    <p data-modal-description class="text-sm text-muted-foreground"></p>
+  </div>
+
+  <footer class="px-6 py-4 flex justify-end gap-2">
+    @!ui.button({ text: 'Cancelar', variant: 'secondary' })
+    @!ui.button({ text: buttonText, 'data-modal-confirm': true })
+  </footer>
+</dialog>

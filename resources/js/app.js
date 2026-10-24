@@ -33,3 +33,21 @@ Alpine.store('theme', {
 })
 
 Alpine.start()
+
+const modal = document.getElementById('confirm-modal')
+if (modal) {
+  let onConfirm = null
+
+  window.confirmModal = ({ title, description, buttonText, onConfirm: callback }) => {
+    modal.querySelector('[data-modal-title]').textContent = title
+    modal.querySelector('[data-modal-description]').textContent = description
+    modal.querySelector('[data-modal-confirm]').textContent = buttonText
+    onConfirm = callback
+    modal.showModal()
+  }
+
+  modal.querySelector('[data-modal-confirm]').addEventListener('click', () => {
+    onConfirm?.()
+    modal.close()
+  })
+}

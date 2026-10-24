@@ -6,6 +6,7 @@
     @each(video in videos)
       <a href="{{ route('videos.show', { id: video.id }) }}">
         @!video.card({
+          id: video.id,
           title: video.title,
           channel: 'Testando',
           views: video.views,
@@ -22,4 +23,5 @@
       postedAt: '3 dias',
     })
   </div>
+  @!modal({})
 @end

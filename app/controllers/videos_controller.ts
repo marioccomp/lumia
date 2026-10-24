@@ -8,6 +8,7 @@ import Video from '#models/video'
 import View from '#models/view'
 import { DateTime } from 'luxon'
 import cache from '@adonisjs/cache/services/main'
+import auth from '@adonisjs/auth/services/main'
 export default class VideosController {
   async create({ view }: HttpContext) {
     return view.render('pages/videos/create/index')
@@ -141,5 +142,23 @@ export default class VideosController {
     } catch (e) {
       throw e
     }
+  }
+
+  async delete({ auth, request, response }: HttpContext) {
+    const { id } = request.params()
+    const user = auth.getUserOrFail()
+
+    const video = await Video.query().where('id', id).where('user_id', user.id).first()
+
+    if (!video) {
+      return response.unauthorized({ message: 'Voce nao eh o dono desse video' })
+    }
+
+    await storage.delete(video.storageKey)
+    await video.delete()
+    if (video.visibility === 'public') {
+      await cache.delete({ key: 'home:videos' })
+    }
+    return response.noContent()
   }
 }

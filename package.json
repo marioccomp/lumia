@@ -33,7 +33,8 @@
     "#database/*": "./database/*.js",
     "#tests/*": "./tests/*.js",
     "#start/*": "./start/*.js",
-    "#config/*": "./config/*.js"
+    "#config/*": "./config/*.js",
+    "#queues/*": "./app/queues/*.js"
   },
   "devDependencies": {
     "@adonisjs/assembler": "^8.4.0",
@@ -61,19 +62,26 @@
   },
   "dependencies": {
     "@adonisjs/auth": "^10.1.0",
+    "@adonisjs/cache": "^2.1.0",
     "@adonisjs/core": "^7.4.0",
     "@adonisjs/lucid": "^22.4.2",
+    "@adonisjs/mail": "^10.4.0",
     "@adonisjs/session": "^8.1.0",
     "@adonisjs/shield": "^9.0.0",
     "@adonisjs/static": "^2.0.1",
     "@adonisjs/vite": "^6.0.0",
+    "@azure/storage-blob": "^12.34.0",
     "@tailwindcss/vite": "^4.3.3",
     "@vinejs/vine": "^4.4.0",
     "better-sqlite3": "^13.0.3",
+    "bullmq": "^6.3.17",
     "edge.js": "^6.5.1",
+    "ioredis": "^6.0.0",
+    "juice": "^12.1.2",
     "luxon": "^3.7.2",
     "reflect-metadata": "^0.2.2",
-    "tailwindcss": "^4.3.3"
+    "tailwindcss": "^4.3.3",
+    "vidstack": "^1.15.7"
   },
   "hotHook": {
     "boundaries": [

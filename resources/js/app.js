@@ -1,4 +1,9 @@
 import Alpine from 'alpinejs'
+import 'vidstack/player/styles/default/theme.css'
+import 'vidstack/player/styles/default/layouts/video.css'
+import 'vidstack/player'
+import 'vidstack/player/layouts/default'
+import 'vidstack/player/ui'
 
 Alpine.data('alert', function () {
   return {
@@ -28,3 +33,21 @@ Alpine.store('theme', {
 })
 
 Alpine.start()
+
+const modal = document.getElementById('confirm-modal')
+if (modal) {
+  let onConfirm = null
+
+  window.confirmModal = ({ title, description, buttonText, onConfirm: callback }) => {
+    modal.querySelector('[data-modal-title]').textContent = title
+    modal.querySelector('[data-modal-description]').textContent = description
+    modal.querySelector('[data-modal-confirm]').textContent = buttonText
+    onConfirm = callback
+    modal.showModal()
+  }
+
+  modal.querySelector('[data-modal-confirm]').addEventListener('click', () => {
+    onConfirm?.()
+    modal.close()
+  })
+}

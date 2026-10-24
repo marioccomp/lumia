@@ -1,0 +1,9 @@
+@emails.body({
+  title_email: 'Sua conta foi criada. Confirme seu e-mail para começar.',
+})
+  @slot('header')
+    @emails.header_card({
+      title: "Boas-vindas, " + user.fullName ? user.fullName : "Visitante" + "!"
+    })
+  @end
+@end

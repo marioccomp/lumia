@@ -64,13 +64,36 @@
         ></span>
       </button>
       @if(auth.user)
-        <div class="post-video">
-          @button({
-            type: 'button',
-            'aria-label': 'Criar conteúdo',
-          })
-            <span class="icon-[lucide--plus] size-5 block" aria-hidden="true"></span>
-          @end
+        <div x-data="{ open: false }" class="relative" @click.outside="open = false">
+          <button
+            type="button"
+            @click="open = !open"
+            class="size-8 flex items-center justify-center text-muted-foreground cursor-pointer rounded-control transition-colors duration-150"
+            aria-label="Criar"
+            :class="{ 'bg-primary/15 ring-1 ring-primary/40': open }"
+          >
+            <span class="icon-[lucide--plus] size-5 block"></span>
+          </button>
+
+          <div
+            class="opcoes absolute top-full -right-30 mt-3 w-46 p-2 bg-card text-foreground border rounded-control shadow-md z-50"
+            x-show="open"
+          >
+            <a
+              href="/videos/new"
+              class="flex items-center gap-2 w-full text-left px-3 py-2 text-sm rounded-control hover:bg-surface transition-colors"
+            >
+              <span class="icon-[lucide--video] size-4 shrink-0 " aria-hiden="true"></span>
+              Criar Vídeo
+            </a>
+            <button
+              type="button"
+              class="flex items-center gap-2 w-full text-left px-3 py-2 text-sm rounded-control hover:bg-surface transition-colors"
+            >
+              <span class="icon-[lucide--radio] size-4 shrink-0" aria-hiden="true"></span>
+              Iniciar Live
+            </button>
+          </div>
         </div>
         @!avatar({
           initials: auth.user.initials,

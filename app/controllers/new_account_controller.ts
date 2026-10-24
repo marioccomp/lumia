@@ -1,6 +1,8 @@
 import User from '#models/user'
 import { signupValidator } from '#validators/user'
 import type { HttpContext } from '@adonisjs/core/http'
+import mail from '@adonisjs/mail/services/main'
+import { renderEmail } from '../../config/mail.ts'
 
 /**
  * NewAccountController handles user registration.
@@ -21,6 +23,11 @@ export default class NewAccountController {
   async store({ request, response, auth }: HttpContext) {
     const payload = await request.validateUsing(signupValidator)
     const user = await User.create({ ...payload })
+
+    const html = await renderEmail('emails/welcome_email', { user })
+    await mail.send((message) => {
+      message.to(user.email).subject('Welcome to our app!').html(html)
+    })
 
     await auth.use('web').login(user)
     response.redirect().toRoute('home')

@@ -10,21 +10,46 @@ export type ScannedRoutes = {
     'session.create': { paramsTuple?: []; params?: {} }
     'session.store': { paramsTuple?: []; params?: {} }
     'session.destroy': { paramsTuple?: []; params?: {} }
+    'videos.create': { paramsTuple?: []; params?: {} }
+    'videos.created': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'videos.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'videos.store': { paramsTuple?: []; params?: {} }
+    'videos.delete': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'health_checks.live': { paramsTuple?: []; params?: {} }
+    'health_checks.ready': { paramsTuple?: []; params?: {} }
+    'videos.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
   }
   GET: {
     'home': { paramsTuple?: []; params?: {} }
     'new_account.create': { paramsTuple?: []; params?: {} }
     'session.create': { paramsTuple?: []; params?: {} }
+    'videos.create': { paramsTuple?: []; params?: {} }
+    'videos.created': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'health_checks.live': { paramsTuple?: []; params?: {} }
+    'health_checks.ready': { paramsTuple?: []; params?: {} }
+    'videos.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
   }
   HEAD: {
     'home': { paramsTuple?: []; params?: {} }
     'new_account.create': { paramsTuple?: []; params?: {} }
     'session.create': { paramsTuple?: []; params?: {} }
+    'videos.create': { paramsTuple?: []; params?: {} }
+    'videos.created': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'health_checks.live': { paramsTuple?: []; params?: {} }
+    'health_checks.ready': { paramsTuple?: []; params?: {} }
+    'videos.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
   }
   POST: {
     'new_account.store': { paramsTuple?: []; params?: {} }
     'session.store': { paramsTuple?: []; params?: {} }
     'session.destroy': { paramsTuple?: []; params?: {} }
+    'videos.store': { paramsTuple?: []; params?: {} }
+  }
+  PUT: {
+    'videos.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+  }
+  DELETE: {
+    'videos.delete': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
   }
 }
 declare module '@adonisjs/core/types/http' {

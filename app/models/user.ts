@@ -2,6 +2,9 @@ import { UserSchema } from '#database/schema'
 import hash from '@adonisjs/core/services/hash'
 import { compose } from '@adonisjs/core/helpers'
 import { withAuthFinder } from '@adonisjs/auth/mixins/lucid'
+import { hasMany } from '@adonisjs/lucid/orm'
+import Video from '#models/video'
+import type { HasMany } from '@adonisjs/lucid/types/relations'
 
 /**
  * User model represents a user in the application.
@@ -14,6 +17,7 @@ export default class User extends compose(UserSchema, withAuthFinder(hash)) {
    * Returns the first letter of first and last name if available,
    * otherwise returns the first two characters of the email username.
    */
+  @hasMany(() => Video) declare videos: HasMany<typeof Video>
   get initials() {
     const [first, last] = this.fullName ? this.fullName.split(' ') : this.email.split('@')
     if (first && last) {

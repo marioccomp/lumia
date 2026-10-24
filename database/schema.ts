@@ -23,3 +23,53 @@ export class UserSchema extends BaseModel {
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   declare updatedAt: DateTime | null
 }
+
+export class VideoSchema extends BaseModel {
+  static $columns = ['createdAt', 'description', 'duration', 'error', 'id', 'processedKey', 'progress', 'status', 'storageKey', 'thumbnailKey', 'title', 'updatedAt', 'userId', 'visibility'] as const
+  $columns = VideoSchema.$columns
+  @column.dateTime({ autoCreate: true })
+  declare createdAt: DateTime | null
+  @column()
+  declare description: string | null
+  @column()
+  declare duration: number | null
+  @column()
+  declare error: string | null
+  @column({ isPrimary: true })
+  declare id: number
+  @column()
+  declare processedKey: string | null
+  @column()
+  declare progress: number
+  @column()
+  declare status: string
+  @column()
+  declare storageKey: string
+  @column()
+  declare thumbnailKey: string | null
+  @column()
+  declare title: string
+  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  declare updatedAt: DateTime | null
+  @column()
+  declare userId: number | null
+  @column()
+  declare visibility: string
+}
+
+export class ViewSchema extends BaseModel {
+  static $columns = ['createdAt', 'id', 'ip', 'updatedAt', 'userId', 'videoId'] as const
+  $columns = ViewSchema.$columns
+  @column.dateTime({ autoCreate: true })
+  declare createdAt: DateTime | null
+  @column({ isPrimary: true })
+  declare id: number
+  @column()
+  declare ip: string
+  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  declare updatedAt: DateTime | null
+  @column()
+  declare userId: number | null
+  @column()
+  declare videoId: number
+}

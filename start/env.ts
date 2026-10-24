@@ -24,4 +24,25 @@ export default await Env.create(new URL('../', import.meta.url), {
 
   // Session
   SESSION_DRIVER: Env.schema.enum(['cookie', 'memory', 'database'] as const),
+
+  /*
+  |----------------------------------------------------------
+  | Variables for configuring the mail package
+  |----------------------------------------------------------
+  */
+  MAIL_MAILER: Env.schema.enum(['resend'] as const),
+  MAIL_FROM_NAME: Env.schema.string(),
+  MAIL_FROM_ADDRESS: Env.schema.string(),
+  RESEND_API_KEY: Env.schema.string(),
+
+  // Storage
+  STORAGE_DRIVER: Env.schema.enum(['local', 'azure'] as const),
+  AZURE_STORAGE_CONNECTION_STRING: Env.schema.string.optional(),
+  AZURE_STORAGE_CONTAINER: Env.schema.string.optional(),
+
+  // CACHE
+  CACHE_STORE: Env.schema.enum(['default', 'memoryOnly'] as const),
+  REDIS_PORT: Env.schema.number(),
+  REDIS_HOST: Env.schema.string(),
+  REDIS_PASSWORD: Env.schema.string(),
 })

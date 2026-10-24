@@ -1,0 +1,21 @@
+@layout()
+  @!video.header({
+    title: 'Vídeo enviado com sucesso!',
+    subtitle:
+      'Estamos processando seu vídeo, e logo ele estará disponível para visualização.',
+  })
+
+  <p>abaixo seguem informações do video</p>
+  <p>{{ video.title }}</p>
+  <p>{{ video.description || 'Sem descrição' }}</p>
+
+  <media-player
+    title="{{ video.title }}"
+    src="{{ videoUrl }}"
+    playsinline
+    class="w-full max-w-[850px] aspect-video"
+  >
+    <media-provider></media-provider>
+    <media-video-layout></media-video-layout>
+  </media-player>
+@end

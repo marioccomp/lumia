@@ -25,8 +25,10 @@ export class UserSchema extends BaseModel {
 }
 
 export class VideoSchema extends BaseModel {
-  static $columns = ['createdAt', 'description', 'duration', 'error', 'id', 'processedKey', 'progress', 'status', 'storageKey', 'thumbnailKey', 'title', 'updatedAt', 'userId', 'visibility'] as const
+  static $columns = ['course', 'createdAt', 'description', 'duration', 'error', 'id', 'processedKey', 'progress', 'status', 'storageKey', 'thumbnailKey', 'title', 'updatedAt', 'userId', 'visibility'] as const
   $columns = VideoSchema.$columns
+  @column()
+  declare course: boolean | null
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime | null
   @column()

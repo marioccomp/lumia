@@ -151,7 +151,7 @@ export default class VideosController {
     const video = await Video.query().where('id', id).where('user_id', user.id).first()
 
     if (!video) {
-      return response.unauthorized({ message: 'Voce nao eh o dono desse video' })
+      return response.unauthorized({ message: 'Voce nao eh o dono desse video, ou o video não existe' })
     }
 
     await storage.delete(video.storageKey)
@@ -160,5 +160,25 @@ export default class VideosController {
       await cache.delete({ key: 'home:videos' })
     }
     return response.noContent()
+  }
+
+  async edit({auth, request, response}: HttpContext) {
+    const {id} = request.params()
+    const user = auth.getUserOrFail()
+    const payload = request.body()
+
+    let video = await Video.query().where('id', id).where('user_id', user.id).first()
+
+    if(!video) {
+      return response.unauthorized({ message: 'Voce nao eh o dono desse video, ou o video não existe' })
+    }
+
+    video = {
+      ...video,
+      title: payload.title ?? video.title,
+      description: payload.description ?? video.description,
+      visibility: payload.visibility ?? payload.visibility
+    }
+
   }
 }

@@ -5,17 +5,20 @@
 >
   @!video.header({
     title: 'Enviar vídeo',
-    subtitle:
-      'O arquivo começa a subir assim que você escolher — você preenche os detalhes enquanto isso.',
+    subtitle: 'Escreva os detalhes referentes ao vídeo.',
   })
 
   <ul class="flex gap-[10px]">
     <li
-      class="text-xs leading-[15px] py-[6px] px-[12px] bg-surface border rounded-full" :class="{'border-ring' : etapa === 1}"
+      class="text-xs leading-[15px] py-[6px] px-[12px] bg-surface border rounded-full"
+      :class="{'border-ring' : etapa === 1}"
     >
       1. Arquivo
     </li>
-    <li class="text-xs leading-[15px] py-[6px] px-[12px] bg-surface border rounded-full" :class="{'border-ring' : etapa === 2}">
+    <li
+      class="text-xs leading-[15px] py-[6px] px-[12px] bg-surface border rounded-full"
+      :class="{'border-ring' : etapa === 2}"
+    >
       2. Publicação
     </li>
   </ul>
@@ -104,41 +107,34 @@
               text: 'Descrição',
               class: 'text-muted-foreground text-sm font-normal',
             })
-
             @!textarea.control({
               placeholder: 'Coloque a descrição do vídeo',
               rows: 4,
               maxlength: 250,
-              class: 'w-full bg-surface border rounded-control px-[10px] py-3 resize-y',
+              class:
+                'w-full bg-surface border rounded-control px-[10px] py-3 resize-y',
             })
 
-            <p class="text-[11.5px] text-muted-foreground">
-              Opcional · até 250 caracteres
-            </p>
-
+            <p class="text-[11.5px] text-muted-foreground">Opcional · até 250 caracteres</p>
             @!field.error()
           </div>
         @end
-
-      @field.root({name: 'course'})
-        <div class="flex flex-col gap-1.5 w-full">
-          @!field.label({
-            text: 'Tipo de Conteúdo',
-            class: 'text-muted-foreground text-sm font-normal',
-          })
-
-          @!select.control({
-            options: [
-              { value: 'false', name: 'Vídeo avulso' },
-              { value: 'true', name: 'Curso' },
-            ],
-            class: 'w-full bg-surface border rounded-control px-[10px] py-3',
-          })
-          
-          @!field.error()
-        </div> 
-      @end
-
+        @field.root({ name: 'course' })
+          <div class="flex flex-col gap-1.5 w-full">
+            @!field.label({
+              text: 'Tipo de Conteúdo',
+              class: 'text-muted-foreground text-sm font-normal',
+            })
+            @!select.control({
+              options: [
+                { value: 'false', name: 'Vídeo avulso' },
+                { value: 'true', name: 'Curso' },
+              ],
+              class: 'w-full bg-surface border rounded-control px-[10px] py-3',
+            })
+            @!field.error()
+          </div>
+        @end
         @field.root({ name: 'visibility' })
           <fieldset class="flex flex-col gap-2">
             <legend class="mb-2 text-sm font-medium">Visibilidade</legend>
@@ -164,26 +160,26 @@
             </label>
 
             <label
-                for="unlisted"
-                class="flex items-start gap-3 p-3 border rounded-control cursor-pointer has-[:checked]:border-ring has-[:checked]:bg-surface"
-              >
-                @!input.control({
-                  type: 'radio',
-                  id: 'unlisted',
-                  value: 'unlisted',
-                  checked: (old('visibility') || 'public') === 'unlisted',
-                  class: 'mt-0.5 size-4 shrink-0 accent-primary',
-                })
+              for="unlisted"
+              class="flex items-start gap-3 p-3 border rounded-control cursor-pointer has-[:checked]:border-ring has-[:checked]:bg-surface"
+            >
+              @!input.control({
+                type: 'radio',
+                id: 'unlisted',
+                value: 'unlisted',
+                checked: (old('visibility') || 'public') === 'unlisted',
+                class: 'mt-0.5 size-4 shrink-0 accent-primary',
+              })
 
-                <span class="flex flex-col gap-0.5">
-                  <span class="text-sm font-medium">Não listado</span>
-                  <span class="text-xs text-muted-foreground">
-                    Só quem tiver o link consegue assistir.
-                  </span>
+              <span class="flex flex-col gap-0.5">
+                <span class="text-sm font-medium">Não listado</span>
+                <span class="text-xs text-muted-foreground">
+                  Só quem tiver o link consegue assistir.
                 </span>
-              </label>
+              </span>
+            </label>
 
-              <label
+            <label
               for="private"
               class="flex items-start gap-3 p-3 border rounded-control cursor-pointer has-[:checked]:border-ring has-[:checked]:bg-surface"
             >
@@ -202,7 +198,6 @@
                 </span>
               </span>
             </label>
-
             @!field.error()
           </fieldset>
         @end
@@ -220,46 +215,46 @@
             x-ref="thumbnailInput"
             @change="
               if (previaThumbnailUrl) {
-                URL.revokeObjectURL(previaThumbnailUrl)
+              URL.revokeObjectURL(previaThumbnailUrl)
               }
 
               arquivoThumbnail = $event.target.files[0] ?? null
 
               if (arquivoThumbnail) {
-                previaThumbnailUrl = URL.createObjectURL(arquivoThumbnail)
+              previaThumbnailUrl = URL.createObjectURL(arquivoThumbnail)
               } else {
-                previaThumbnailUrl = null
+              previaThumbnailUrl = null
               }
-            "
+              "
           />
           <div
-              class="relative aspect-video w-full overflow-hidden rounded-xl border border-border bg-surface"
+            class="relative aspect-video w-full overflow-hidden rounded-xl border border-border bg-surface"
+          >
+            <div
+              x-show="!previaThumbnailUrl"
+              class="absolute inset-0 flex flex-col items-center justify-center gap-2 p-4 text-center"
             >
-              <div
-                x-show="!previaThumbnailUrl"
-                class="absolute inset-0 flex flex-col items-center justify-center gap-2 p-4 text-center"
-              >
-                <span
-                  class="icon-[lucide--image] size-8 text-muted-foreground"
-                  aria-hidden="true"
-                ></span>
-                <p class="text-xs text-muted-foreground">Prévia da Thumbnail</p>
-              </div>
-
-              <img
-                x-show="previaThumbnailUrl"
-                :src="previaThumbnailUrl"
-                alt="Prévia da thumbnail do vídeo"
-                class="absolute inset-0 size-full object-cover"
-              />
+              <span
+                class="icon-[lucide--image] size-8 text-muted-foreground"
+                aria-hidden="true"
+              ></span>
+              <p class="text-xs text-muted-foreground">Prévia da Thumbnail</p>
             </div>
+
+            <img
+              x-show="previaThumbnailUrl"
+              :src="previaThumbnailUrl"
+              alt="Prévia da thumbnail do vídeo"
+              class="absolute inset-0 size-full object-cover"
+            />
+          </div>
           @!ui.button({
-              text: 'Escolher Imagem',
-              type: 'button',
-              variant: 'secondary',
-              fullWidth: true,
-              '@click': '$refs.thumbnailInput.click()',
-            })
+            text: 'Escolher Imagem',
+            type: 'button',
+            variant: 'secondary',
+            fullWidth: true,
+            '@click': '$refs.thumbnailInput.click()',
+          })
         </div>
         @!ui.button({
           text: 'Publicar',
@@ -270,8 +265,4 @@
   </form>
 </div>
 
-<div class="flex flex-col gap-[10px]"
-  id="step-upload"
-  x-data="{ etapa: 2, arquivo: null}">
-
-</div>
+<div class="flex flex-col gap-[10px]" id="step-upload" x-data="{ etapa: 2, arquivo: null}"></div>

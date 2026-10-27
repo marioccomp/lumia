@@ -7,7 +7,12 @@
     data-menu
     class="absolute right-2 top-11 z-20 w-60 py-1.5 bg-card text-foreground border border-border rounded-xl shadow-lg text-sm hidden"
   >
-    <li class="px-4 py-2 hover:bg-surface cursor-pointer">Editar detalhes</li>
+    <li
+      class="px-4 py-2 hover:bg-surface cursor-pointer"
+      onclick="openEditModal(event, {{ id }})"
+    >
+      Editar detalhes
+    </li>
     <li class="px-4 py-2 hover:bg-surface cursor-pointer">Alterar miniatura</li>
     <li class="px-4 py-2 hover:bg-surface cursor-pointer">Copiar link</li>
     <li class="px-4 py-2 hover:bg-surface cursor-pointer">Tornar não listado</li>
@@ -40,7 +45,7 @@
   </div>
   {{-- Falta adaptar a parte abaixo para cursos tambem, seguindo o que esta no figma --}}
   <div class="flex flex-col gap-[5px]">
-    <h2 class="font-semibold text-sm leading-[20px]">{{ title }}</h2>
+    <h2 data-card-title class="font-semibold text-sm leading-[20px]">{{ title }}</h2>
     <div class="flex flex-col gap-[1px]">
       <p class="font-normal text-muted-foreground text-xs">{{ channel }} · {{ duration }}</p>
       <p class="font-normal text-muted-foreground text-xs">
@@ -76,6 +81,38 @@
     }
 
     document.querySelector(`[data-card][data-video-id="${videoId}"]`)?.closest('a')?.remove();
+  }
+
+  function openEditModal(e, videoId) {
+    e.preventDefault();
+    const currentTitle = document
+      .querySelector(`[data-card][data-video-id="${videoId}"] [data-card-title]`)
+      .textContent.trim();
+    confirmModal({
+      title: 'Editar detalhes',
+      buttonText: 'Salvar',
+      fields: [
+        { name: 'title', label: 'Titulo', value: currentTitle, required: true },
+        { name: 'description', label: 'Descrição', placeholder: 'Opcional' },
+      ],
+      onConfirm: (data) => editVideo(videoId, data),
+    });
+  }
+
+  async function editVideo(videoId, data) {
+    const csrf = document.querySelector('meta[name="csrf-token"]').content;
+    const response = await fetch(`/videos/${videoId}`, {
+      method: 'PUT',
+      headers: { 'X-CSRF-TOKEN': csrf, 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+    if (!response.ok) {
+      const body = await response.json().catch(() => null);
+      return alert(body?.errors?.[0]?.message ?? 'Não foi possível editar o vídeo');
+    }
+
+    document.querySelector(`[data-card][data-video-id="${videoId}"] [data-card-title]`).textContent =
+      data.title;
   }
 
   function details(e, button) {

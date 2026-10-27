@@ -36,18 +36,51 @@ Alpine.start()
 
 const modal = document.getElementById('confirm-modal')
 if (modal) {
+  const form = modal.querySelector('[data-modal-form]')
+  const titleEl = modal.querySelector('[data-modal-title]')
+  const descriptionEl = modal.querySelector('[data-modal-description]')
+  const confirmBtn = modal.querySelector('[data-modal-confirm]')
+  const cancelBtn = modal.querySelector('[data-modal-cancel]')
+  const fieldsEl = modal.querySelector('[data-modal-fields]')
+  const fieldTpl = modal.querySelector('[data-field-template]')
   let onConfirm = null
 
-  window.confirmModal = ({ title, description, buttonText, onConfirm: callback }) => {
-    modal.querySelector('[data-modal-title]').textContent = title
-    modal.querySelector('[data-modal-description]').textContent = description
-    modal.querySelector('[data-modal-confirm]').textContent = buttonText
+  const createField = ({ name, label, type = 'text', placeholder = '', required = false, value = '' }) => {
+    const node = fieldTpl.content.firstElementChild.cloneNode(true)
+    const input = node.querySelector('input')
+    const labelEl = node.querySelector('label')
+
+    input.name = name
+    input.id = `modal-${name}`
+    input.type = type
+    input.placeholder = placeholder
+    input.required = required
+    input.value = value
+
+    if (label) {
+      labelEl.textContent = label
+      labelEl.htmlFor = input.id
+    } else {
+      labelEl.remove()
+    }
+
+    return node
+  }
+
+  window.confirmModal = ({ title, description = '', buttonText = 'Confirmar', fields = [], onConfirm: callback }) => {
+    titleEl.textContent = title
+    descriptionEl.textContent = description
+    confirmBtn.textContent = buttonText
+    fieldsEl.replaceChildren(...fields.map(createField))
     onConfirm = callback
     modal.showModal()
   }
 
-  modal.querySelector('[data-modal-confirm]').addEventListener('click', () => {
-    onConfirm?.()
+  form.addEventListener('submit', (e) => {
+    e.preventDefault()
+    onConfirm?.(Object.fromEntries(new FormData(form)))
     modal.close()
   })
+
+  cancelBtn.addEventListener('click', () => modal.close())
 }

@@ -9,5 +9,5 @@ export const videoValidator = vine.create({
 export const updateVideoValidator = vine.create({
   title: vine.string().trim().minLength(3).maxLength(50),
   description: vine.string().trim().maxLength(250).optional(),
-  visibility: vine.enum(['public', 'unlisted', 'private']),
+  visibility: vine.enum(['public', 'unlisted', 'private']).optional(),
 })

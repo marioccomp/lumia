@@ -64,6 +64,7 @@ export default class VideosController {
   }
 
   async update({ params, request, response, auth }: HttpContext) {
+    console.log('entrou aq')
     const video = await Video.query()
       .where('id', params.id)
       .where('userId', auth.getUserOrFail().id)
@@ -104,8 +105,8 @@ export default class VideosController {
 
       const video = await Video.query().where('id', id).where('visibility', 'public').firstOrFail()
 
-      logger.info(video, 'Video encontrado')
-      logger.info(user, 'User encontrado')
+      logger.info(video.$attributes, 'Video encontrado')
+      logger.info(user?.$attributes, 'User encontrado')
 
       const lastView = await View.query()
         .where('video_id', id)
@@ -116,7 +117,7 @@ export default class VideosController {
         .orderBy('created_at', 'desc')
         .first()
 
-      logger.info(lastView?.createdAt, 'Ultima view do usuario, caso tenha')
+      lastView?.createdAt ? logger.info('Ja teve view aqui') : logger.info('nunca teve view')
 
       if (lastView?.createdAt) {
         const minutes = DateTime.now().diff(lastView.createdAt, 'minutes').minutes
@@ -138,7 +139,18 @@ export default class VideosController {
         await View.create(newView)
       }
 
-      return view.render('pages/videos/show', { video, videoUrl: storage.url(video.storageKey) })
+      const comments = await video
+        .related('comments')
+        .query()
+        .preload('user')
+        .orderBy('created_at', 'desc')
+        .limit(20)
+
+      return view.render('pages/videos/show', {
+        video,
+        videoUrl: storage.url(video.storageKey),
+        comments,
+      })
     } catch (e) {
       throw e
     }
@@ -151,7 +163,9 @@ export default class VideosController {
     const video = await Video.query().where('id', id).where('user_id', user.id).first()
 
     if (!video) {
-      return response.unauthorized({ message: 'Voce nao eh o dono desse video, ou o video não existe' })
+      return response.unauthorized({
+        message: 'Voce nao eh o dono desse video, ou o video não existe',
+      })
     }
 
     await storage.delete(video.storageKey)
@@ -160,25 +174,5 @@ export default class VideosController {
       await cache.delete({ key: 'home:videos' })
     }
     return response.noContent()
-  }
-
-  async edit({auth, request, response}: HttpContext) {
-    const {id} = request.params()
-    const user = auth.getUserOrFail()
-    const payload = request.body()
-
-    let video = await Video.query().where('id', id).where('user_id', user.id).first()
-
-    if(!video) {
-      return response.unauthorized({ message: 'Voce nao eh o dono desse video, ou o video não existe' })
-    }
-
-    video = {
-      ...video,
-      title: payload.title ?? video.title,
-      description: payload.description ?? video.description,
-      visibility: payload.visibility ?? payload.visibility
-    }
-
   }
 }

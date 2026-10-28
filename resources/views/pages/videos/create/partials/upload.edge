@@ -1,99 +1,268 @@
-<div class="flex flex-col gap-[10px]" id="step-upload">
+<div
+  class="flex flex-col gap-[10px]"
+  id="step-upload"
+  x-data="{ etapa: 1, arquivo: null, previaUrl:null, arquivoThumbnail: null, previaThumbnailUrl: null,}"
+>
   @!video.header({
     title: 'Enviar vídeo',
-    subtitle:
-      'O arquivo começa a subir assim que você escolher — você preenche os detalhes enquanto isso.',
+    subtitle: 'Escreva os detalhes referentes ao vídeo.',
   })
 
   <ul class="flex gap-[10px]">
     <li
-      class="text-xs leading-[15px] py-[6px] px-[12px] bg-surface border border-ring rounded-full"
+      class="text-xs leading-[15px] py-[6px] px-[12px] bg-surface border rounded-full"
+      :class="{'border-ring' : etapa === 1}"
     >
       1. Arquivo
     </li>
-    <li class="text-xs leading-[15px] py-[6px] px-[12px] bg-surface border rounded-full">
+    <li
+      class="text-xs leading-[15px] py-[6px] px-[12px] bg-surface border rounded-full"
+      :class="{'border-ring' : etapa === 2}"
+    >
       2. Publicação
     </li>
   </ul>
 
-  <form method="POST" action="/videos/new?_csrf={{ csrfToken }}" id="details-form" enctype="multipart/form-data">
-  <div class="flex flex-col items-center">
-    <div
-      class="max-w-[850px] w-full h-[clamp(240px,40dvh,380px)] flex flex-col gap-[14px] rounded-2xl justify-center items-center bg-surface border-2 border-dashed border-"
-    >
-      <div class="bg-background border rounded-full size-14 flex items-center justify-center">
-        <span class="size-6 icon-[lucide--upload]"></span>
-      </div>
+  <form
+    method="POST"
+    action="/videos/new?_csrf={{ csrfToken }}"
+    id="details-form"
+    enctype="multipart/form-data"
+  >
+    <div class="flex flex-col items-center pt-6" x-show="etapa === 1">
+      <div
+        class="max-w-[1000px] w-full flex flex-col gap-[14px] rounded-2xl justify-center items-center bg-surface border-2 border-dashed overflow-hidden"
+        :class="{ 'h-[clamp(320px,45dvh,440px)] p-6': !previaUrl }"
+      >
+        <div
+          class="bg-background border rounded-full size-14 flex items-center justify-center"
+          x-show="!previaUrl"
+        >
+          <span class="size-6 icon-[lucide--upload]"></span>
+        </div>
 
-      <div class="flex flex-col items-center gap-[5px]">
-        <h3 class="font-semibold text-base text-foreground leading-[19px]">
-          Arraste seu vídeo aqui
-        </h3>
-        <p class="text-muted-foreground text-[13px] leading-[16px]">
-          ou clique para escolher um arquivo
+        <div class="flex flex-col items-center gap-[5px]" x-show="!previaUrl">
+          <h3 class="font-semibold text-base text-foreground leading-[19px]">
+            Arraste seu vídeo aqui
+          </h3>
+          <p class="text-muted-foreground text-[13px] leading-[16px]">
+            ou clique para escolher um arquivo
+          </p>
+        </div>
+        <div x-show="!previaUrl">
+          <input
+            type="file"
+            name="video"
+            id="video-input"
+            accept="video/mp4,video/quicktime, video/webm"
+            class="sr-only"
+            x-ref="videoInput"
+            @change="if(previaUrl) {
+              URL.revokeObjectURL(previaUrl)
+              }
+              arquivo = $event.target.files[0] ?? null
+              if(arquivo){
+              previaUrl = URL.createObjectURL(arquivo)
+              } else {
+              previaUrl = null}"
+          />
+          @!ui.button({
+            text: 'Escolher arquivo',
+            class: 'font-semibold',
+            '@click': '$refs.videoInput.click()',
+          })
+        </div>
+        <p class="text-muted-foreground leading-[14px] text-[11.5px]" x-show="!previaUrl">
+          MP4 ou MOV · até 500 MB · máx. 20 minutos
         </p>
-      </div>
-      <div x-data>
-        <input
-          type="file"
-          name="video"
-          id="video-input"
-          accept="video/mp4,video/quicktime, video/webm"
-          class="sr-only"
-          x-ref="videoInput"
-        />
-        @!ui.button({
-          text: 'Escolher arquivo',
-          class: 'font-semibold',
-          '@click': '$refs.videoInput.click()',
-        })
-      </div>
-      <p class="text-muted-foreground leading-[14px] text-[11.5px]">
-        MP4 ou MOV · até 500 MB · máx. 20 minutos
-      </p>
-    </div>
-      @!ui.input({
-        label: 'Título',
-        placeholder: 'Dê um título ao seu vídeo',
-        footerText: 'Mínimo 3 caracteres · 0/50',
-        name: 'title',
-      })
-      @!ui.input({
-        label: 'Descrição',
-        placeholder: 'Conte do que se trata o vídeo...',
-        footerText: 'Opcional · 0/250',
-        name: 'description',
-      })
-      @if(flashMessages.has('error'))
-    <p>{{ flashMessages.get('error') }}</p>
-  @end
 
-      @!ui.input({
-        type: 'radio',
-        id: 'public',
-        name: 'visibility',
-        value: 'public',
-        label: 'Público',
-        checked: true,
+        <video
+          class="w-full h-auto object-contain rounded-2xl min-h-0"
+          controls
+          :src="previaUrl"
+          x-show="previaUrl"
+          x-ref="previaVideo"
+        ></video>
+      </div>
+      @ui.button({
+        text: 'Continuar',
+        type: 'button',
+        class: 'mt-4 font-semibold',
+        'x-show': 'arquivo !== null',
+        '@click': '$refs.previaVideo.pause();etapa = 2',
       })
-      @!ui.input({
-        type: 'radio',
-        id: 'unlisted',
-        name: 'visibility',
-        value: 'unlisted',
-        label: 'Não listado',
-      })
-      @!ui.input({
-        type: 'radio',
-        id: 'private',
-        name: 'visibility',
-        value: 'private',
-        label: 'Privado',
-      })
-      @!ui.button({
-        text: 'Salvar e continuar',
-        type: 'submit',
-      })
-    </form>
-  </div>
+      @end
+    </div>
+    <div x-show="etapa === 2" class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+      <div class="lg:col-span-2 flex flex-col gap-5 min-w-0">
+        @!ui.input({
+          label: 'Título',
+          placeholder: 'Dê um título ao seu vídeo',
+          footerText: 'Mínimo 3 caracteres · 0/50',
+          name: 'title',
+        })
+        @field.root({ name: 'description' })
+          <div class="flex flex-col gap-1.5 w-full">
+            @!field.label({
+              text: 'Descrição',
+              class: 'text-muted-foreground text-sm font-normal',
+            })
+            @!textarea.control({
+              placeholder: 'Coloque a descrição do vídeo',
+              rows: 4,
+              maxlength: 250,
+              class:
+                'w-full bg-surface border rounded-control px-[10px] py-3 resize-y',
+            })
+
+            <p class="text-[11.5px] text-muted-foreground">Opcional · até 250 caracteres</p>
+            @!field.error()
+          </div>
+        @end
+        @field.root({ name: 'course' })
+          <div class="flex flex-col gap-1.5 w-full">
+            @!field.label({
+              text: 'Tipo de Conteúdo',
+              class: 'text-muted-foreground text-sm font-normal',
+            })
+            @!select.control({
+              options: [
+                { value: 'false', name: 'Vídeo avulso' },
+                { value: 'true', name: 'Curso' },
+              ],
+              class: 'w-full bg-surface border rounded-control px-[10px] py-3',
+            })
+            @!field.error()
+          </div>
+        @end
+        @field.root({ name: 'visibility' })
+          <fieldset class="flex flex-col gap-2">
+            <legend class="mb-2 text-sm font-medium">Visibilidade</legend>
+
+            <label
+              for="public"
+              class="flex items-start gap-3 p-3 border rounded-control cursor-pointer has-[:checked]:border-ring has-[:checked]:bg-surface"
+            >
+              @!input.control({
+                type: 'radio',
+                id: 'public',
+                value: 'public',
+                checked: (old('visibility') || 'public') === 'public',
+                class: 'mt-0.5 size-4 shrink-0 accent-primary',
+              })
+
+              <span class="flex flex-col gap-0.5">
+                <span class="text-sm font-medium">Público</span>
+                <span class="text-xs text-muted-foreground">
+                  Disponível publicamente na plataforma, onde qualquer pessoa pode assistir o vídeo.
+                </span>
+              </span>
+            </label>
+
+            <label
+              for="unlisted"
+              class="flex items-start gap-3 p-3 border rounded-control cursor-pointer has-[:checked]:border-ring has-[:checked]:bg-surface"
+            >
+              @!input.control({
+                type: 'radio',
+                id: 'unlisted',
+                value: 'unlisted',
+                checked: (old('visibility') || 'public') === 'unlisted',
+                class: 'mt-0.5 size-4 shrink-0 accent-primary',
+              })
+
+              <span class="flex flex-col gap-0.5">
+                <span class="text-sm font-medium">Não listado</span>
+                <span class="text-xs text-muted-foreground">
+                  Só quem tiver o link consegue assistir.
+                </span>
+              </span>
+            </label>
+
+            <label
+              for="private"
+              class="flex items-start gap-3 p-3 border rounded-control cursor-pointer has-[:checked]:border-ring has-[:checked]:bg-surface"
+            >
+              @!input.control({
+                type: 'radio',
+                id: 'private',
+                value: 'private',
+                checked: (old('visibility') || 'public') === 'private',
+                class: 'mt-0.5 size-4 shrink-0 accent-primary',
+              })
+
+              <span class="flex flex-col gap-0.5">
+                <span class="text-sm font-medium">Privado</span>
+                <span class="text-xs text-muted-foreground">
+                  Apenas você vai conseguir assistir
+                </span>
+              </span>
+            </label>
+            @!field.error()
+          </fieldset>
+        @end
+      </div>
+
+      <aside class="flex flex-col gap-4 min-w-0">
+        <div class="bg-card border border-border rounded-2xl p-4 flex flex-col gap-3">
+          <h3 class="text-sm font-medium">Thumbnail</h3>
+          <input
+            type="file"
+            name="thumbnail"
+            accept="image/jpeg,image/png,image/webp"
+            class="sr-only"
+            aria-label="Selecionar Thumbnail"
+            x-ref="thumbnailInput"
+            @change="
+              if (previaThumbnailUrl) {
+              URL.revokeObjectURL(previaThumbnailUrl)
+              }
+
+              arquivoThumbnail = $event.target.files[0] ?? null
+
+              if (arquivoThumbnail) {
+              previaThumbnailUrl = URL.createObjectURL(arquivoThumbnail)
+              } else {
+              previaThumbnailUrl = null
+              }
+              "
+          />
+          <div
+            class="relative aspect-video w-full overflow-hidden rounded-xl border border-border bg-surface"
+          >
+            <div
+              x-show="!previaThumbnailUrl"
+              class="absolute inset-0 flex flex-col items-center justify-center gap-2 p-4 text-center"
+            >
+              <span
+                class="icon-[lucide--image] size-8 text-muted-foreground"
+                aria-hidden="true"
+              ></span>
+              <p class="text-xs text-muted-foreground">Prévia da Thumbnail</p>
+            </div>
+
+            <img
+              x-show="previaThumbnailUrl"
+              :src="previaThumbnailUrl"
+              alt="Prévia da thumbnail do vídeo"
+              class="absolute inset-0 size-full object-cover"
+            />
+          </div>
+          @!ui.button({
+            text: 'Escolher Imagem',
+            type: 'button',
+            variant: 'secondary',
+            fullWidth: true,
+            '@click': '$refs.thumbnailInput.click()',
+          })
+        </div>
+        @!ui.button({
+          text: 'Publicar',
+          type: 'submit',
+        })
+      </aside>
+    </div>
+  </form>
 </div>
+
+<div class="flex flex-col gap-[10px]" id="step-upload" x-data="{ etapa: 2, arquivo: null}"></div>

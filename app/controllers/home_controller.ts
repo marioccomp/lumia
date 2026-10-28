@@ -23,6 +23,7 @@ export default class HomeController {
           id: v.id,
           title: v.title,
           views: Number(v.$extras.views_count),
+          thumbnailUrl: v.thumbnailKey ? storage.url(v.thumbnailKey) : null,
           url: storage.url(v.storageKey),
         }))
       },

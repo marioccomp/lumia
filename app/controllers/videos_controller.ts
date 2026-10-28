@@ -16,6 +16,15 @@ export default class VideosController {
 
   async store({ request, auth, response, session }: HttpContext) {
     let key: string | undefined
+    let thumbnailKey: string | undefined
+    let videoSaved = false
+
+    const thumbnailTypes: Record<string, string> = {
+      '.jpg': 'image/jpeg',
+      '.jpeg': 'image/jpeg',
+      '.png': 'image/png',
+      '.webp': 'image/webp',
+    }
 
     const user = auth.getUserOrFail()
 
@@ -30,16 +39,52 @@ export default class VideosController {
         await storage.put(key, part)
       }
     )
+
+    request.multipart.onFile(
+      'thumbnail',
+      { size: '5mb', extnames: ['jpg', 'jpeg', 'png', 'webp'] },
+      async (part, reporter) => {
+        part.pause()
+        part.on('data', reporter)
+
+        const extension = path.extname(part.file.clientName).toLowerCase()
+
+        thumbnailKey = `${user.id}/thumbnails/${randomUUID()}${extension}`
+
+        await storage.put(
+          thumbnailKey,
+          part,
+          thumbnailTypes[extension] ?? 'application/octet-stream'
+        )
+      }
+    )
+
     try {
       await request.multipart.process()
 
       const data = await request.validateUsing(videoValidator)
       const file = request.file('video')
-      if (!key || !file || !file.isValid) {
-        key ? await storage.delete(key) : ''
-        return response.badRequest({
-          message: key ? 'Arquivo invalido' : 'Caminho invalido',
-          fileErrors: file ? file.errors : null,
+      const thumbnail = request.file('thumbnail')
+
+      const thumbnailMimeType = thumbnail
+  ? thumbnailTypes[path.extname(thumbnail.clientName).toLowerCase()]
+  : undefined
+
+      const thumbnailInvalid =
+        thumbnail &&
+        (!thumbnail.isValid ||
+          !thumbnailKey ||
+          thumbnailMimeType !== `${thumbnail.type}/${thumbnail.subtype}`)
+
+      if (!key || !file || !file.isValid || thumbnailInvalid) {
+        await Promise.allSettled([
+          key ? storage.delete(key) : Promise.resolve(),
+          thumbnailKey ? storage.delete(thumbnailKey) : Promise.resolve(),
+        ])
+          return response.badRequest({
+          message: 'Arquivo de vídeo ou thumbnail inválido.',
+          fileErrors: file?.errors ?? null,
+          thumbnailErrors: thumbnail?.errors ?? null,
         })
       }
 
@@ -48,8 +93,11 @@ export default class VideosController {
         description: data.description,
         userId: user.id,
         storageKey: key,
+        thumbnailKey: thumbnailKey ?? null,
         visibility: data.visibility,
       })
+
+      videoSaved = true
 
       if (data.visibility === 'public') {
         cache.delete({ key: 'home:videos' })
@@ -58,8 +106,14 @@ export default class VideosController {
       session.flash('success', 'Video criado com sucesso')
       return response.redirect().toRoute('videos.created', { id: video.id })
     } catch (e) {
-      key ? await storage.delete(key) : ''
-      throw e
+      if (!videoSaved) {
+      await Promise.allSettled([
+        key ? storage.delete(key) : Promise.resolve(),
+        thumbnailKey ? storage.delete(thumbnailKey) : Promise.resolve(),
+    ])
+  }
+
+  throw e
     }
   }
 

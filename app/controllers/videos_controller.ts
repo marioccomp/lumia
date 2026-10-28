@@ -9,9 +9,32 @@ import View from '#models/view'
 import { DateTime } from 'luxon'
 import cache from '@adonisjs/cache/services/main'
 import auth from '@adonisjs/auth/services/main'
+import listVideos from '#services/videos/list_videos'
 export default class VideosController {
   async create({ view }: HttpContext) {
     return view.render('pages/videos/create/index')
+  }
+
+  async list({ view }: HttpContext) {
+    const videos = await cache.getOrSet({
+      key: 'home:videos',
+      ttl: '5m',
+      factory: async () => {
+        const rows = await listVideos({
+          filters: { status: 'ready', visibility: 'public', course: false },
+          withViews: true,
+        })
+        return rows.map((v) => ({
+          id: v.id,
+          title: v.title,
+          views: Number(v.$extras.views_count),
+          thumbnailUrl: v.thumbnailKey ? storage.url(v.thumbnailKey) : null,
+          url: storage.url(v.storageKey),
+        }))
+      },
+    })
+    logger.info(videos, 'videos encontrados com a query')
+    return view.render('pages/home', { videos })
   }
 
   async store({ request, auth, response, session }: HttpContext) {
@@ -67,8 +90,8 @@ export default class VideosController {
       const thumbnail = request.file('thumbnail')
 
       const thumbnailMimeType = thumbnail
-  ? thumbnailTypes[path.extname(thumbnail.clientName).toLowerCase()]
-  : undefined
+        ? thumbnailTypes[path.extname(thumbnail.clientName).toLowerCase()]
+        : undefined
 
       const thumbnailInvalid =
         thumbnail &&
@@ -81,7 +104,7 @@ export default class VideosController {
           key ? storage.delete(key) : Promise.resolve(),
           thumbnailKey ? storage.delete(thumbnailKey) : Promise.resolve(),
         ])
-          return response.badRequest({
+        return response.badRequest({
           message: 'Arquivo de vídeo ou thumbnail inválido.',
           fileErrors: file?.errors ?? null,
           thumbnailErrors: thumbnail?.errors ?? null,
@@ -107,13 +130,13 @@ export default class VideosController {
       return response.redirect().toRoute('videos.created', { id: video.id })
     } catch (e) {
       if (!videoSaved) {
-      await Promise.allSettled([
-        key ? storage.delete(key) : Promise.resolve(),
-        thumbnailKey ? storage.delete(thumbnailKey) : Promise.resolve(),
-    ])
-  }
+        await Promise.allSettled([
+          key ? storage.delete(key) : Promise.resolve(),
+          thumbnailKey ? storage.delete(thumbnailKey) : Promise.resolve(),
+        ])
+      }
 
-  throw e
+      throw e
     }
   }
 

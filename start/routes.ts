@@ -26,10 +26,11 @@ router
 router
   .group(() => {
     router.post('logout', [controllers.Session, 'destroy'])
-    router.get('/videos/new', [controllers.Videos, 'create'])
+    router.get('/videos', [controllers.Videos, 'list']).as('videos.list')
+    router.get('/videos/new', [controllers.Videos, 'create']).as('videos.create')
     router.get('/videos/new/:id', [controllers.Videos, 'created']).as('videos.created')
-    router.put('/videos/:id', [controllers.Videos, 'update'])
-    router.post('/videos/new', [controllers.Videos, 'store'])
+    router.put('/videos/:id', [controllers.Videos, 'update']).as('videos.update')
+    router.post('/videos/new', [controllers.Videos, 'store']).as('videos.store')
     router.post('/videos/:id/comments', [controllers.Comments, 'create'])
     router.put('/videos/:id/comments/:commentId', [controllers.Comments, 'update'])
     router.delete('/videos/:id/comments/:commentId', [controllers.Comments, 'delete'])

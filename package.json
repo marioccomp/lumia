@@ -71,6 +71,7 @@
     "@adonisjs/static": "^2.0.1",
     "@adonisjs/vite": "^6.0.0",
     "@azure/storage-blob": "^12.34.0",
+    "@duckdb/node-api": "2.0.0-r.1",
     "@tailwindcss/vite": "^4.3.3",
     "@vinejs/vine": "^4.4.0",
     "better-sqlite3": "^13.0.3",

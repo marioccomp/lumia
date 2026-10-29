@@ -19,6 +19,8 @@ export type ScannedRoutes = {
     'comments.update': { paramsTuple: [ParamValue,ParamValue]; params: {'id': ParamValue,'commentId': ParamValue} }
     'comments.delete': { paramsTuple: [ParamValue,ParamValue]; params: {'id': ParamValue,'commentId': ParamValue} }
     'videos.delete': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'datasets.create': { paramsTuple?: []; params?: {} }
+    'datasets.store': { paramsTuple?: []; params?: {} }
     'health_checks.live': { paramsTuple?: []; params?: {} }
     'health_checks.ready': { paramsTuple?: []; params?: {} }
     'videos.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
@@ -30,6 +32,7 @@ export type ScannedRoutes = {
     'videos.list': { paramsTuple?: []; params?: {} }
     'videos.create': { paramsTuple?: []; params?: {} }
     'videos.created': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'datasets.create': { paramsTuple?: []; params?: {} }
     'health_checks.live': { paramsTuple?: []; params?: {} }
     'health_checks.ready': { paramsTuple?: []; params?: {} }
     'videos.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
@@ -41,6 +44,7 @@ export type ScannedRoutes = {
     'videos.list': { paramsTuple?: []; params?: {} }
     'videos.create': { paramsTuple?: []; params?: {} }
     'videos.created': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'datasets.create': { paramsTuple?: []; params?: {} }
     'health_checks.live': { paramsTuple?: []; params?: {} }
     'health_checks.ready': { paramsTuple?: []; params?: {} }
     'videos.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
@@ -51,6 +55,7 @@ export type ScannedRoutes = {
     'session.destroy': { paramsTuple?: []; params?: {} }
     'videos.store': { paramsTuple?: []; params?: {} }
     'comments.create': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'datasets.store': { paramsTuple?: []; params?: {} }
   }
   PUT: {
     'videos.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }

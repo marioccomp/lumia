@@ -1,0 +1,37 @@
+@layout()
+  <form method="POST" action="/datasets?_csrf={{ csrfToken }}" enctype="multipart/form-data">
+    @!ui.input({
+      label: 'Nome',
+      name: 'name',
+    })
+
+    @!ui.input({
+      label: 'Descrição',
+      name: 'description',
+      multiline: true,
+    })
+
+    @field.root({ name: 'visibility' })
+      @!field.label({ text: 'Visibilidade' })
+      @!select.control({
+        options: [
+          { value: 'public', name: 'Público' },
+          { value: 'private', name: 'Privado' },
+        ],
+      })
+      @!field.error()
+    @end
+
+    @!ui.input({
+      label: 'Arquivo (csv, json ou parquet)',
+      name: 'file',
+      type: 'file',
+      accept: '.csv,.json,.parquet',
+    })
+
+    @!ui.button({
+      text: 'Enviar',
+      type: 'submit',
+    })
+  </form>
+@end

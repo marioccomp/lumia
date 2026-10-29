@@ -35,6 +35,8 @@ router
     router.put('/videos/:id/comments/:commentId', [controllers.Comments, 'update'])
     router.delete('/videos/:id/comments/:commentId', [controllers.Comments, 'delete'])
     router.delete('/videos/:id', [controllers.Videos, 'delete'])
+    router.get('/datasets', [controllers.Datasets, 'create']).as('datasets.create')
+    router.post('/datasets', [controllers.Datasets, 'store']).as('datasets.store')
   })
   .use(middleware.auth())
 

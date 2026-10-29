@@ -5,6 +5,7 @@
 
 export const controllers = {
   Comments: () => import('#controllers/comments_controller'),
+  Datasets: () => import('#controllers/datasets_controller'),
   HealthChecks: () => import('#controllers/health_checks_controller'),
   Home: () => import('#controllers/home_controller'),
   NewAccount: () => import('#controllers/new_account_controller'),

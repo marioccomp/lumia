@@ -8,7 +8,6 @@ import Video from '#models/video'
 import View from '#models/view'
 import { DateTime } from 'luxon'
 import cache from '@adonisjs/cache/services/main'
-import auth from '@adonisjs/auth/services/main'
 import listVideos from '#services/videos/list_videos'
 export default class VideosController {
   async create({ view }: HttpContext) {

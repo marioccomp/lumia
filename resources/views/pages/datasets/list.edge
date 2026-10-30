@@ -1,0 +1,9 @@
+@layout()
+  <h1>Datasets</h1>
+
+  <ul>
+    @each(dataset in datasets)
+      <li>{{ dataset.name }} - {{ dataset.rowCount }} linhas</li>
+    @end
+  </ul>
+@end

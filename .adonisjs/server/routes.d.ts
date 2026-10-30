@@ -20,6 +20,7 @@ export type ScannedRoutes = {
     'comments.delete': { paramsTuple: [ParamValue,ParamValue]; params: {'id': ParamValue,'commentId': ParamValue} }
     'videos.delete': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'datasets.create': { paramsTuple?: []; params?: {} }
+    'datasets.list': { paramsTuple?: []; params?: {} }
     'datasets.store': { paramsTuple?: []; params?: {} }
     'health_checks.live': { paramsTuple?: []; params?: {} }
     'health_checks.ready': { paramsTuple?: []; params?: {} }
@@ -33,6 +34,7 @@ export type ScannedRoutes = {
     'videos.create': { paramsTuple?: []; params?: {} }
     'videos.created': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'datasets.create': { paramsTuple?: []; params?: {} }
+    'datasets.list': { paramsTuple?: []; params?: {} }
     'health_checks.live': { paramsTuple?: []; params?: {} }
     'health_checks.ready': { paramsTuple?: []; params?: {} }
     'videos.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
@@ -45,6 +47,7 @@ export type ScannedRoutes = {
     'videos.create': { paramsTuple?: []; params?: {} }
     'videos.created': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'datasets.create': { paramsTuple?: []; params?: {} }
+    'datasets.list': { paramsTuple?: []; params?: {} }
     'health_checks.live': { paramsTuple?: []; params?: {} }
     'health_checks.ready': { paramsTuple?: []; params?: {} }
     'videos.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }

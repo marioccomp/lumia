@@ -21,6 +21,12 @@ export default class DatasetsController {
     return view.render('pages/datasets/create')
   }
 
+  async list({ view }: HttpContext) {
+    const datasets = await Dataset.query().where('visibility', 'public')
+
+    return view.render('pages/datasets/list', { datasets: datasets })
+  }
+
   async store({ auth, request, response, session }: HttpContext) {
     const { file, ...data } = await request.validateUsing(createDatasetValidator)
     let instance: DuckDBInstance | undefined

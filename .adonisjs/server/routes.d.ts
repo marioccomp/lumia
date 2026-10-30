@@ -13,6 +13,7 @@ export type ScannedRoutes = {
     'videos.create': { paramsTuple?: []; params?: {} }
     'videos.created': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'videos.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'channels.me': { paramsTuple?: []; params?: {} }
     'videos.store': { paramsTuple?: []; params?: {} }
     'comments.create': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'comments.update': { paramsTuple: [ParamValue,ParamValue]; params: {'id': ParamValue,'commentId': ParamValue} }
@@ -28,6 +29,7 @@ export type ScannedRoutes = {
     'session.create': { paramsTuple?: []; params?: {} }
     'videos.create': { paramsTuple?: []; params?: {} }
     'videos.created': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'channels.me': { paramsTuple?: []; params?: {} }
     'health_checks.live': { paramsTuple?: []; params?: {} }
     'health_checks.ready': { paramsTuple?: []; params?: {} }
     'videos.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
@@ -38,6 +40,7 @@ export type ScannedRoutes = {
     'session.create': { paramsTuple?: []; params?: {} }
     'videos.create': { paramsTuple?: []; params?: {} }
     'videos.created': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'channels.me': { paramsTuple?: []; params?: {} }
     'health_checks.live': { paramsTuple?: []; params?: {} }
     'health_checks.ready': { paramsTuple?: []; params?: {} }
     'videos.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }

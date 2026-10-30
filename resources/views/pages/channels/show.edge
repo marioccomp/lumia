@@ -1,0 +1,157 @@
+@layout()
+  <section class="flex flex-col gap-6" x-data="{abaAtiva: 'videos'}">
+    <div
+  class="relative h-36 w-full rounded-card border border-border bg-linear-to-r from-primary/35 to-primary sm:h-44"
+    >
+        @if(isOwner)
+            @!ui.button({
+            text: 'Editar capa',
+            variant: 'secondary',
+            disabled: true,
+            class:
+                'absolute bottom-4 right-4 text-sm disabled:cursor-not-allowed disabled:opacity-60',
+            })
+        @end
+    </div>
+
+    <div class="flex flex-wrap items-start gap-4">
+      @!avatar({
+        initials: channelUser.initials,
+        class:
+          'size-20 shrink-0 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-2xl font-semibold',
+      })
+
+      <div class="min-w-0 flex flex-col gap-2">
+        <div class="flex flex-wrap items-center gap-2">
+          <h1 class="text-2xl font-semibold">{{ channelUser.fullName || 'Seu canal' }}</h1>
+          @if(isOwner)
+            <span
+              class="rounded-full border border-primary/30 bg-primary/10 px-2 py-0.5 text-xs text-primary-text"
+            >
+              Seu canal
+            </span>
+          @end
+        </div>
+
+        <p class="text-xs text-muted-foreground">
+          Entrou em
+          {{ channelUser.createdAt.toFormat('dd/MM/yyyy') }}
+        </p>
+
+        <p class="text-sm text-muted-foreground">
+          Conteúdo sobre programação, tecnologia e aprendizado.
+        </p>
+
+      </div>
+      @if(isOwner)
+        <div class="flex w-full flex-wrap gap-2 lg:ml-auto lg:w-auto">
+            @!ui.button({
+            text: 'Editar canal',
+            variant: 'secondary',
+            disabled: true,
+            class: 'text-sm disabled:cursor-not-allowed disabled:opacity-60',
+            })
+
+            @!ui.button({
+            text: 'Ver como visitante',
+            variant: 'ghost',
+            disabled: true,
+            class: 'text-sm disabled:cursor-not-allowed disabled:opacity-60',
+            })
+        </div>
+        @end
+    </div>
+
+    @let(channelStats = [
+    { label: 'Inscritos', value: '8 bilhões, pai ta chato' },
+    { label: 'Vídeos', value: 'Alguns tlgs' },
+    { label: 'Cursos', value: 'Segredo' },
+    { label: 'Visualizações', value: 'Mais que o Mr Beast' },
+    ])
+
+    <dl class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        @each(stat in channelStats)
+            <div class="flex flex-col gap-1 rounded-card border border-border bg-card p-4">
+            <dt class="text-xs text-muted-foreground">
+                {{ stat.label }}
+            </dt>
+
+            <dd class="text-2xl font-semibold">
+                {{ stat.value }}
+            </dd>
+            </div>
+        @end
+    </dl>
+
+    @let(channelTabs = [
+        { value: 'videos', label: 'Vídeos' },
+        { value: 'cursos', label: 'Cursos' },
+        { value: 'rascunhos', label: 'Rascunhos' },
+        { value: 'sobre', label: 'Sobre' },
+        ])
+
+    <div
+    role="group"
+    aria-label="Seções do canal"
+    class="flex gap-6 overflow-x-auto border-b border-border"
+    >
+    @each(tab in channelTabs)
+        @if(tab.value !== 'rascunhos' || isOwner)
+        @!button({
+            type: 'button',
+            text: tab.label,
+            '@click': `abaAtiva = '${tab.value}'`,
+            ':aria-pressed': `abaAtiva === '${tab.value}'`,
+            ':class':
+            `abaAtiva === '${tab.value}' ? 'border-primary text-foreground' : 'border-transparent text-muted-foreground'`,
+            class:
+            'shrink-0 cursor-pointer border-b-2 px-1 pb-3 text-sm font-medium transition-colors hover:text-foreground',
+        })
+        @end
+    @end
+    </div>
+
+    <div x-show="abaAtiva === 'videos'" class="flex flex-col gap-4">
+  <div class="flex flex-wrap items-center justify-between gap-3">
+    <h2 class="text-lg font-semibold">Seus Vídeos</h2>
+
+    @if(isOwner)
+      @!link({
+        route: 'videos.create',
+        text: 'Enviar vídeo',
+        class:
+          'inline-flex items-center justify-center rounded-control bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary-hover',
+      })
+    @end
+  </div>
+
+    <p class="text-sm text-muted-foreground">
+        Os vídeos do canal aparecerão aqui.
+    </p>
+    </div>
+
+    <div x-show="abaAtiva === 'cursos'" style="display: none">
+    <h2 class="mb-3 text-lg font-semibold">Seus Cursos</h2>
+    <p class="text-sm text-muted-foreground">
+        A seção de cursos estará disponível em breve.
+    </p>
+    </div>
+
+    @if(isOwner)
+    <div x-show="abaAtiva === 'rascunhos'" style="display: none">
+        <h2 class="mb-3 text-lg font-semibold">Rascunhos</h2>
+        <p class="text-sm text-muted-foreground">
+        A seção de rascunhos estará disponível em breve.
+        </p>
+    </div>
+    @end
+
+    <div x-show="abaAtiva === 'sobre'" style="display: none">
+    <h2 class="mb-3 text-lg font-semibold">Sobre o canal</h2>
+    <p class="text-sm text-muted-foreground">
+        Conteúdo sobre programação, tecnologia e aprendizado.
+    </p>
+    </div>
+
+  </section>
+@end

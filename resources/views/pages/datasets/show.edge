@@ -8,10 +8,32 @@
     Abaixo você poderá fazer qualquer consulta SQL de leitura do dataset acima. Lembrando que estamos rodando a engine DuckDB, então caso queira algo específico, consulte a documentação
   </p>
 
-  <div x-data="sqlEditor" data-schema="{{ dataset.schema }}">
+  <div
+    x-data="{...sqlEditor(),
+      async executeQuery(query) {
+      const csrf = document.querySelector('meta[name=csrf-token]').content
+      const response = await fetch('/dataset/{{ dataset.id }}/query', {
+      method: 'POST',
+      body:
+      JSON.stringify({query})
+      ,
+      headers: { 'X-CSRF-TOKEN': csrf, 'Content-Type': 'application/json' },
+      })
+
+      if (!response.ok) {
+      console.error('Erro', response.status)
+      return
+      }
+
+      const data = await response.json()
+      console.log(data)
+      }
+      }"
+    data-schema="{{ dataset.schema }}"
+  >
     <div x-ref="editor" class="[&_.cm-editor]:h-64"></div>
     @!ui.button({
-      '@click': 'console.log(getQuery())',
+      '@click': 'executeQuery(getQuery())',
       text: 'Executar',
     })
   </div>

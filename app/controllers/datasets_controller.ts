@@ -5,10 +5,13 @@ import storage from '#services/storage/index'
 import { createDatasetValidator } from '#validators/dataset'
 import type { HttpContext } from '@adonisjs/core/http'
 import { randomUUID } from 'node:crypto'
-import { createReadStream } from 'node:fs'
+import { createReadStream, createWriteStream } from 'node:fs'
 import { type DuckDBConnection, DuckDBInstance } from '@duckdb/node-api'
-import { stat, rm } from 'node:fs/promises'
+import { stat, rm, mkdir } from 'node:fs/promises'
 import logger from '@adonisjs/core/services/logger'
+import path from 'node:path'
+import { pipeline } from 'node:stream/promises'
+import app from '@adonisjs/core/services/app'
 
 const readers = {
   csv: 'read_csv',
@@ -30,6 +33,17 @@ export default class DatasetsController {
     const datasets = await Dataset.query().where('visibility', 'public')
 
     return view.render('pages/datasets/list', { datasets: datasets })
+  }
+
+  async execute({ request, session, params }: HttpContext) {
+    const id = params.id
+
+    const dataset = await Dataset.findOrFail(id)
+
+    await mkdir(app.tmpPath('datasets'), { recursive: true })
+
+    const tmp = path.join(app.tmpPath('datasets'), `${randomUUID()}.parquet`)
+    await pipeline(await storage.getStream(dataset.storageKey), createWriteStream(tmp))
   }
 
   async store({ auth, request, response, session }: HttpContext) {

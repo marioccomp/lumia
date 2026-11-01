@@ -38,6 +38,7 @@ router
     router.delete('/videos/:id', [controllers.Videos, 'delete'])
     router.get('/datasets/new', [controllers.Datasets, 'create']).as('datasets.create')
     router.post('/datasets', [controllers.Datasets, 'store']).as('datasets.store')
+    router.post('/dataset/:id/query', [controllers.Datasets, 'execute']).as('dataset.execute')
   })
   .use(middleware.auth())
 

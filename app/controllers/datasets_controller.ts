@@ -21,6 +21,11 @@ export default class DatasetsController {
     return view.render('pages/datasets/create')
   }
 
+  async show({ view, params }: HttpContext) {
+    const dataset = await Dataset.findOrFail(params.id)
+    return view.render('pages/datasets/show', { dataset })
+  }
+
   async list({ view }: HttpContext) {
     const datasets = await Dataset.query().where('visibility', 'public')
 

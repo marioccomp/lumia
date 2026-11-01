@@ -3,7 +3,9 @@
 
   <ul>
     @each(dataset in datasets)
-      <li>{{ dataset.name }} - {{ dataset.rowCount }} linhas</li>
+      <a href="{{ urlFor('dataset.show', { id: dataset.id }) }}">
+        <li>{{ dataset.name }} - {{ dataset.rowCount }} linhas</li>
+      </a>
     @end
   </ul>
 @end

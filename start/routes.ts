@@ -12,6 +12,8 @@ import { controllers } from '#generated/controllers'
 import router from '@adonisjs/core/services/router'
 
 router.get('/', [controllers.Home, 'show']).as('home')
+router.get('/videos', [controllers.Videos, 'list']).as('videos.list')
+router.get('/datasets', [controllers.Datasets, 'list']).as('datasets.list')
 
 router
   .group(() => {
@@ -26,22 +28,21 @@ router
 router
   .group(() => {
     router.post('logout', [controllers.Session, 'destroy'])
-    router.get('/videos', [controllers.Videos, 'list']).as('videos.list')
     router.get('/videos/new', [controllers.Videos, 'create']).as('videos.create')
     router.get('/videos/new/:id', [controllers.Videos, 'created']).as('videos.created')
-    router.put('/videos/:id', [controllers.Videos, 'update']).as('videos.update')
     router.post('/videos/new', [controllers.Videos, 'store']).as('videos.store')
     router.post('/videos/:id/comments', [controllers.Comments, 'create'])
     router.put('/videos/:id/comments/:commentId', [controllers.Comments, 'update'])
+    router.put('/videos/:id', [controllers.Videos, 'update']).as('videos.update')
     router.delete('/videos/:id/comments/:commentId', [controllers.Comments, 'delete'])
     router.delete('/videos/:id', [controllers.Videos, 'delete'])
     router.get('/datasets/new', [controllers.Datasets, 'create']).as('datasets.create')
-    router.get('/datasets', [controllers.Datasets, 'list']).as('datasets.list')
     router.post('/datasets', [controllers.Datasets, 'store']).as('datasets.store')
   })
   .use(middleware.auth())
 
 router.get('/health/live', [controllers.HealthChecks, 'live'])
+router.get('datasets/:id', [controllers.Datasets, 'show']).as('dataset.show')
 
 router
   .get('/health/ready', [controllers.HealthChecks, 'ready'])

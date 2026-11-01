@@ -13,7 +13,7 @@ const cacheConfig = defineConfig({
 
       .useL2Layer(
         drivers.file({
-          directory: app.tmpPath('cache'),
+          directory: 'tmp/cache',
         })
       ),
   },

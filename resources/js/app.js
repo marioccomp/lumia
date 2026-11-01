@@ -5,6 +5,33 @@ import 'vidstack/player'
 import 'vidstack/player/layouts/default'
 import 'vidstack/player/ui'
 
+import { EditorView, basicSetup } from 'codemirror'
+import { sql } from '@codemirror/lang-sql'
+
+Alpine.data('sqlEditor', function () {
+  let view = null
+
+  return {
+    init() {
+      const columns = JSON.parse(this.$el.dataset.schema)
+
+      sql({
+        schema: { dataset: columns.map((c) => c.name) },
+        defaultTable: 'dataset',
+        upperCaseKeywords: true,
+      })
+      view = new EditorView({
+        doc: 'SELECT * FROM dataset LIMIT 10',
+        extensions: [basicSetup, sql()],
+        parent: this.$refs.editor,
+      })
+    },
+    getQuery() {
+      return view.state.doc.toString()
+    },
+  }
+})
+
 Alpine.data('alert', function () {
   return {
     isVisible: false,
@@ -45,7 +72,14 @@ if (modal) {
   const fieldTpl = modal.querySelector('[data-field-template]')
   let onConfirm = null
 
-  const createField = ({ name, label, type = 'text', placeholder = '', required = false, value = '' }) => {
+  const createField = ({
+    name,
+    label,
+    type = 'text',
+    placeholder = '',
+    required = false,
+    value = '',
+  }) => {
     const node = fieldTpl.content.firstElementChild.cloneNode(true)
     const input = node.querySelector('input')
     const labelEl = node.querySelector('label')
@@ -67,7 +101,13 @@ if (modal) {
     return node
   }
 
-  window.confirmModal = ({ title, description = '', buttonText = 'Confirmar', fields = [], onConfirm: callback }) => {
+  window.confirmModal = ({
+    title,
+    description = '',
+    buttonText = 'Confirmar',
+    fields = [],
+    onConfirm: callback,
+  }) => {
     titleEl.textContent = title
     descriptionEl.textContent = description
     confirmBtn.textContent = buttonText

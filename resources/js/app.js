@@ -19,7 +19,7 @@ Alpine.data('sqlEditor', function () {
     loading: false,
     error: null,
 
-    init() {
+    async init() {
       datasetId = this.$el.dataset.id
       const columns = JSON.parse(this.$el.dataset.schema)
       view = new EditorView({
@@ -34,6 +34,9 @@ Alpine.data('sqlEditor', function () {
         ],
         parent: this.$refs.editor,
       })
+
+      await this.executeQuery()
+      document.querySelector('#sql-preview').classList.remove('hidden')
     },
     getQuery() {
       return view.state.doc.toString()
@@ -57,6 +60,7 @@ Alpine.data('sqlEditor', function () {
           return
         }
 
+        document.querySelector('#sql-preview').classList.add('hidden')
         this.renderResult(data.columns, data.rows)
       } catch {
         this.error = 'Falha na comunicação com o servidor'
@@ -110,6 +114,7 @@ if (wrapper) {
   new Grid({
     columns: ['Name', 'Email'],
     data: [['John', 'john@example.com']],
+    autoWidth: false,
   }).render(wrapper)
 }
 

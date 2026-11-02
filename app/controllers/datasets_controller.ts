@@ -6,12 +6,13 @@ import { createDatasetValidator } from '#validators/dataset'
 import type { HttpContext } from '@adonisjs/core/http'
 import { randomUUID } from 'node:crypto'
 import { createReadStream, createWriteStream } from 'node:fs'
-import { type DuckDBConnection, DuckDBInstance } from '@duckdb/node-api'
+import { type DuckDBConnection, DuckDBInstance, StatementType } from '@duckdb/node-api'
 import { stat, rm, mkdir } from 'node:fs/promises'
 import logger from '@adonisjs/core/services/logger'
 import path from 'node:path'
 import { pipeline } from 'node:stream/promises'
 import app from '@adonisjs/core/services/app'
+import { executeQueryValidator } from '#validators/query'
 
 const readers = {
   csv: 'read_csv',
@@ -35,8 +36,10 @@ export default class DatasetsController {
     return view.render('pages/datasets/list', { datasets: datasets })
   }
 
-  async execute({ request, session, params }: HttpContext) {
+  async execute({ request, session, params, response }: HttpContext) {
     const id = params.id
+
+    const { query } = await request.validateUsing(executeQueryValidator)
 
     const dataset = await Dataset.findOrFail(id)
 
@@ -44,6 +47,47 @@ export default class DatasetsController {
 
     const tmp = path.join(app.tmpPath('datasets'), `${randomUUID()}.parquet`)
     await pipeline(await storage.getStream(dataset.storageKey), createWriteStream(tmp))
+    let instance: DuckDBInstance | undefined
+    let connection: DuckDBConnection | undefined
+
+    try {
+      instance = await DuckDBInstance.create()
+      connection = await instance.connect()
+
+      await connection.run(`CREATE TABLE dataset AS SELECT * FROM read_parquet('${tmp}')`)
+
+      const extracted = await connection.extractStatements(query)
+
+      if (extracted.count !== 1) {
+        return response.badRequest({ error: 'Envie apenas um comando por vez' })
+      }
+
+      const prepared = await extracted.prepare(0)
+
+      if (prepared.statementType !== StatementType.SELECT) {
+        return response.badRequest({ error: 'Apenas consultas SELECT são permitidas' })
+      }
+
+      await connection.run('SET enable_external_access = false')
+      await connection.run('SET lock_configuration = true')
+
+      const result = await connection.runAndReadAll(query)
+
+      const rows = result.getRowsJson()
+      const columns = result.columnNames()
+      logger.info(rows, 'linhas retornadas')
+      return response.status(200).json({
+        rows,
+        columns,
+      })
+    } catch (e) {
+      logger.error(e, 'Erro na execucao da query')
+      return response.badRequest({ e })
+    } finally {
+      connection?.closeSync()
+      instance?.closeSync()
+      await rm(tmp, { force: true })
+    }
   }
 
   async store({ auth, request, response, session }: HttpContext) {

@@ -7,27 +7,71 @@ import 'vidstack/player/ui'
 
 import { EditorView, basicSetup } from 'codemirror'
 import { sql } from '@codemirror/lang-sql'
+import { Grid } from 'gridjs'
+import 'gridjs/dist/theme/mermaid.css'
 
 Alpine.data('sqlEditor', function () {
   let view = null
+  let grid = null
+  let datasetId = null
 
   return {
-    init() {
-      const columns = JSON.parse(this.$el.dataset.schema)
+    loading: false,
+    error: null,
 
-      sql({
-        schema: { dataset: columns.map((c) => c.name) },
-        defaultTable: 'dataset',
-        upperCaseKeywords: true,
-      })
+    init() {
+      datasetId = this.$el.dataset.id
+      const columns = JSON.parse(this.$el.dataset.schema)
       view = new EditorView({
         doc: 'SELECT * FROM dataset LIMIT 10',
-        extensions: [basicSetup, sql()],
+        extensions: [
+          basicSetup,
+          sql({
+            schema: { dataset: columns.map((c) => c.name) },
+            defaultTable: 'dataset',
+            upperCaseKeywords: true,
+          }),
+        ],
         parent: this.$refs.editor,
       })
     },
     getQuery() {
       return view.state.doc.toString()
+    },
+    async executeQuery() {
+      this.loading = true
+      this.error = null
+
+      try {
+        const csrf = document.querySelector('meta[name=csrf-token]').content
+        const response = await fetch(`/dataset/${datasetId}/query`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': csrf },
+          body: JSON.stringify({ query: this.getQuery() }),
+        })
+
+        const data = await response.json()
+
+        if (!response.ok) {
+          this.error = data.error ?? 'Erro ao executar a query'
+          return
+        }
+
+        this.renderResult(data.columns, data.rows)
+      } catch {
+        this.error = 'Falha na comunicação com o servidor'
+      } finally {
+        this.loading = false
+      }
+    },
+
+    renderResult(columns, rows) {
+      if (!grid) {
+        grid = new Grid({ columns, data: rows, sort: true, pagination: { limit: 20 } })
+        grid.render(this.$refs.result)
+      } else {
+        grid.updateConfig({ columns, data: rows }).forceRender()
+      }
     },
   }
 })
@@ -60,6 +104,14 @@ Alpine.store('theme', {
 })
 
 Alpine.start()
+
+const wrapper = document.getElementById('wrapper')
+if (wrapper) {
+  new Grid({
+    columns: ['Name', 'Email'],
+    data: [['John', 'john@example.com']],
+  }).render(wrapper)
+}
 
 const modal = document.getElementById('confirm-modal')
 if (modal) {

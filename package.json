@@ -10,7 +10,7 @@
   "scripts": {
     "start": "node bin/server.js",
     "build": "node ace build",
-    "dev": "node ace serve --hmr",
+    "dev": "node ace serve --hmr && node ace migration:run",
     "test": "node ace test",
     "lint": "eslint .",
     "format": "prettier --write .",
@@ -79,6 +79,7 @@
     "bullmq": "^6.3.17",
     "codemirror": "^6.0.2",
     "edge.js": "^6.5.1",
+    "gridjs": "^6.2.0",
     "ioredis": "^6.0.0",
     "juice": "^12.1.2",
     "luxon": "^3.7.2",

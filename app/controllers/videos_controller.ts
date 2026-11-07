@@ -9,6 +9,8 @@ import View from '#models/view'
 import { DateTime } from 'luxon'
 import cache from '@adonisjs/cache/services/main'
 import listVideos from '#services/videos/list_videos'
+import Like from '#models/like'
+import SavedVideo from '#models/saved_video'
 export default class VideosController {
   async create({ view }: HttpContext) {
     return view.render('pages/videos/create/index')
@@ -222,10 +224,33 @@ export default class VideosController {
         .orderBy('created_at', 'desc')
         .limit(20)
 
+      const [{ $extras }] = await View.query().where('video_id', id).count('* as total')
+      const likes = await Like.query().where('video_id', id).count('* as total')
+      const viewsCount = Number($extras.total)
+      const likesCount = Number(likes[0].$extras.total)
+      let hasLiked = false
+      let hasSaved = false
+      if (user) {
+        const like = await Like.query()
+          .where('video_id', video.id)
+          .where('user_id', user.id)
+          .first()
+        like ? (hasLiked = true) : ''
+        const saved = await SavedVideo.query()
+          .where('video_id', video.id)
+          .where('user_id', user.id)
+          .first()
+        saved ? (hasSaved = true) : ''
+      }
+
       return view.render('pages/videos/show', {
         video,
         videoUrl: storage.url(video.storageKey),
         comments,
+        viewsCount,
+        hasLiked,
+        likesCount,
+        hasSaved,
       })
     } catch (e) {
       throw e
@@ -249,6 +274,36 @@ export default class VideosController {
     if (video.visibility === 'public') {
       await cache.delete({ key: 'home:videos' })
     }
+    return response.noContent()
+  }
+
+  async save({ auth, params, response }: HttpContext) {
+    const user = auth.getUserOrFail()
+
+    const id = params.id
+
+    logger.info(`usuario ${user.fullName} salvando no video id ${id}`)
+
+    const savedVideo = SavedVideo.firstOrCreate({ videoId: id, userId: user.id })
+
+    return response.status(201).json({
+      message: 'Video salvo com sucesso',
+    })
+  }
+
+  async unsave({ response, auth, params }: HttpContext) {
+    const user = auth.getUserOrFail()
+
+    const videoId = params.id
+
+    logger.info(`usuario ${user.fullName} unsalvando no video id ${videoId}`)
+
+    const savedVideo = await SavedVideo.query()
+      .where('video_id', videoId)
+      .where('user_id', user.id)
+      .firstOrFail()
+
+    await savedVideo.delete()
     return response.noContent()
   }
 }

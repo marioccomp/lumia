@@ -30,14 +30,16 @@
 
       <div class="flex border w-full max-w-[320px] items-center justify-center px-4 relative">
         <p
+          onclick="toggleLike()"
           class="cursor-pointer text-foreground font-medium text-[13px] w-full max-w-[33%] py-3 flex items-center gap-1"
         >
           <span class="icon-[lucide--thumbs-up]"></span>
-          1,2 mil
+          <span id="likes-count">{{ likesCount }}</span>
         </p>
         <span class="icon-[lucide--tally-1] absolute left-[28.75%]"></span>
 
         <p
+          onclick="toggleSave()"
           class="cursor-pointer  text-foreground font-medium text-[13px] w-full max-w-[33%] py-3 flex items-center gap-1"
         >
           <span class="icon-[lucide--save]"></span>
@@ -56,7 +58,11 @@
 
     <div class="flex flex-col p-[16px] gap-[8px] bg-surface rounded-xl w-full">
       <div>
-        <p class="font-medium text-muted-foreground text-xs">12 mil visualizações · há 3 dias</p>
+        <p class="font-medium text-muted-foreground text-xs">
+          {{ viewsCount }}
+          visualizações ·
+          {{ video.createdAt.toRelative() }}
+        </p>
       </div>
 
       <p class="text-foreground font-normal text-sm">{{ video.description }}</p>
@@ -125,4 +131,48 @@
       </div>
     </div>
   </div>
+  <script>
+
+
+
+
+
+
+
+
+                                    let liked = {{hasLiked ? 'true' : 'false'}}
+                                    let saved = {{hasSaved ? 'true' : 'false'}}
+                                    async function toggleLike() {
+                                      const response = await fetch(`/videos/{{video.id}}/like`, {
+                                        method: liked ? 'DELETE' : 'POST',
+                                        headers: { 'X-CSRF-TOKEN': '{{csrfToken}}' },
+                                      });
+
+                                      if(!response.ok) return
+
+                                      liked = !liked;
+                                      const count = document.getElementById('likes-count');
+                                      count.textContent = Number(count.textContent) + (liked ? 1 : -1);
+                                    }
+
+                                    async function toggleSave() {
+                                      const response = await fetch(`/videos/{{video.id}}/save`, {
+                                        method: saved ? 'DELETE' : 'POST',
+                                        headers: { 'X-CSRF-TOKEN': '{{csrfToken}}' },
+                                      });
+
+                                      if(!response.ok) return
+
+                                      saved = !saved;
+
+                                    }
+
+
+
+
+
+
+
+
+  </script>
 @end

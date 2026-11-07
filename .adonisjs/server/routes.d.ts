@@ -16,6 +16,10 @@ export type ScannedRoutes = {
     'videos.created': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'videos.store': { paramsTuple?: []; params?: {} }
     'comments.create': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'likes.store': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'videos.save': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'videos.unsave': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'likes.delete': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'comments.update': { paramsTuple: [ParamValue,ParamValue]; params: {'id': ParamValue,'commentId': ParamValue} }
     'videos.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'comments.delete': { paramsTuple: [ParamValue,ParamValue]; params: {'id': ParamValue,'commentId': ParamValue} }
@@ -62,16 +66,20 @@ export type ScannedRoutes = {
     'session.destroy': { paramsTuple?: []; params?: {} }
     'videos.store': { paramsTuple?: []; params?: {} }
     'comments.create': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'likes.store': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'videos.save': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'datasets.store': { paramsTuple?: []; params?: {} }
     'dataset.execute': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+  }
+  DELETE: {
+    'videos.unsave': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'likes.delete': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'comments.delete': { paramsTuple: [ParamValue,ParamValue]; params: {'id': ParamValue,'commentId': ParamValue} }
+    'videos.delete': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
   }
   PUT: {
     'comments.update': { paramsTuple: [ParamValue,ParamValue]; params: {'id': ParamValue,'commentId': ParamValue} }
     'videos.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
-  }
-  DELETE: {
-    'comments.delete': { paramsTuple: [ParamValue,ParamValue]; params: {'id': ParamValue,'commentId': ParamValue} }
-    'videos.delete': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
   }
 }
 declare module '@adonisjs/core/types/http' {

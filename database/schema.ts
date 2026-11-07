@@ -57,6 +57,32 @@ export class DatasetSchema extends BaseModel {
   declare visibility: string
 }
 
+export class LikeSchema extends BaseModel {
+  static $columns = ['createdAt', 'id', 'userId', 'videoId'] as const
+  $columns = LikeSchema.$columns
+  @column.dateTime({ autoCreate: true })
+  declare createdAt: DateTime | null
+  @column({ isPrimary: true })
+  declare id: number
+  @column()
+  declare userId: number
+  @column()
+  declare videoId: number
+}
+
+export class SavedVideoSchema extends BaseModel {
+  static $columns = ['createdAt', 'id', 'userId', 'videoId'] as const
+  $columns = SavedVideoSchema.$columns
+  @column.dateTime({ autoCreate: true })
+  declare createdAt: DateTime | null
+  @column({ isPrimary: true })
+  declare id: number
+  @column()
+  declare userId: number
+  @column()
+  declare videoId: number
+}
+
 export class UserSchema extends BaseModel {
   static $columns = ['createdAt', 'email', 'fullName', 'id', 'password', 'updatedAt'] as const
   $columns = UserSchema.$columns

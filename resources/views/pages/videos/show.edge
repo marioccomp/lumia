@@ -69,6 +69,8 @@
 
         <p
           class="cursor-pointer  text-foreground font-medium text-[13px] w-full max-w-[33%] py-3 flex items-center gap-1"
+          x-data
+          @click="$shareVideo({{ video.id }})"
         >
           <span class="icon-[lucide--share]"></span>
           Compartilhar
@@ -161,61 +163,63 @@
 
 
 
-                                          let subscribed = {{hasSubscribed ? 'true' : 'false'}}
 
-                                          let liked = {{hasLiked ? 'true' : 'false'}}
-                                          let saved = {{hasSaved ? 'true' : 'false'}}
-                                          async function toggleLike() {
-                                            const response = await fetch(`/videos/{{video.id}}/like`, {
-                                              method: liked ? 'DELETE' : 'POST',
-                                              headers: { 'X-CSRF-TOKEN': '{{csrfToken}}' },
-                                            });
+                                              let subscribed = {{hasSubscribed ? 'true' : 'false'}}
 
-                                            if(!response.ok) return
+                                              let liked = {{hasLiked ? 'true' : 'false'}}
+                                              let saved = {{hasSaved ? 'true' : 'false'}}
+                                              async function toggleLike() {
+                                                const response = await fetch(`/videos/{{video.id}}/like`, {
+                                                  method: liked ? 'DELETE' : 'POST',
+                                                  headers: { 'X-CSRF-TOKEN': '{{csrfToken}}' },
+                                                });
 
-                                            liked = !liked;
-                                            const count = document.getElementById('likes-count');
-                                            const icon = document.getElementById('like-icon')
-                                            icon.classList.toggle('icon-[tabler--thumb-up-filled]', liked)
-                                            icon.classList.toggle('icon-[tabler--thumb-up]', !liked)
+                                                if(!response.ok) return
 
-                                            count.textContent = Number(count.textContent) + (liked ? 1 : -1);
-                                          }
+                                                liked = !liked;
+                                                const count = document.getElementById('likes-count');
+                                                const icon = document.getElementById('like-icon')
+                                                icon.classList.toggle('icon-[tabler--thumb-up-filled]', liked)
+                                                icon.classList.toggle('icon-[tabler--thumb-up]', !liked)
 
-                                        async function toggleSave() {
-                                            const response = await fetch(`/videos/{{video.id}}/save`, {
-                                              method: saved ? 'DELETE' : 'POST',
-                                              headers: { 'X-CSRF-TOKEN': '{{csrfToken}}' },
-                                            });
+                                                count.textContent = Number(count.textContent) + (liked ? 1 : -1);
+                                              }
 
-                                            if(!response.ok) return
+                                            async function toggleSave() {
+                                                const response = await fetch(`/videos/{{video.id}}/save`, {
+                                                  method: saved ? 'DELETE' : 'POST',
+                                                  headers: { 'X-CSRF-TOKEN': '{{csrfToken}}' },
+                                                });
 
-                                            saved = !saved;
-                                            Alpine.store('notify').show('Video salvo', 'Sua lista foi atualizada')
+                                                if(!response.ok) return
 
-                                          }
+                                                saved = !saved;
+                                                Alpine.store('notify').show('Video salvo', 'Sua lista foi atualizada')
 
-                                          const PRIMARY = ['bg-primary', 'text-primary-foreground', 'hover:bg-primary-hover']
-                                      const SECONDARY = ['bg-surface', 'text-foreground', 'border', 'border-border', 'hover:bg-border']
-                                          async function toggleSubscribe() {
-                                            const response = await fetch(`/{{video.user.id}}/subscribe`, {
-                                              method: subscribed ? 'DELETE' : 'POST',
-                                              headers: { 'X-CSRF-TOKEN': '{{csrfToken}}' },
-                                            });
+                                              }
 
-                                            if(!response.ok) return
-                                            subscribed = !subscribed;
+                                              const PRIMARY = ['bg-primary', 'text-primary-foreground', 'hover:bg-primary-hover']
+                                          const SECONDARY = ['bg-surface', 'text-foreground', 'border', 'border-border', 'hover:bg-border']
+                                              async function toggleSubscribe() {
+                                                const response = await fetch(`/{{video.user.id}}/subscribe`, {
+                                                  method: subscribed ? 'DELETE' : 'POST',
+                                                  headers: { 'X-CSRF-TOKEN': '{{csrfToken}}' },
+                                                });
 
-                                            const button = document.getElementById('subscribe-btn')
+                                                if(!response.ok) return
+                                                subscribed = !subscribed;
 
-                                              button.classList.remove(...(subscribed ? PRIMARY : SECONDARY))
-                                      button.classList.add(...(subscribed ? SECONDARY : PRIMARY))
-                                      button.textContent = subscribed ? 'Inscrito' : 'Inscrever-se'
+                                                const button = document.getElementById('subscribe-btn')
 
-                                            const count = document.getElementById('subscribers-count');
+                                                  button.classList.remove(...(subscribed ? PRIMARY : SECONDARY))
+                                          button.classList.add(...(subscribed ? SECONDARY : PRIMARY))
+                                          button.textContent = subscribed ? 'Inscrito' : 'Inscrever-se'
 
-                                            count.textContent = Number(count.textContent) + (subscribed ? 1 : -1);
-                                          }
+                                                const count = document.getElementById('subscribers-count');
+
+                                                count.textContent = Number(count.textContent) + (subscribed ? 1 : -1);
+                                              }
+
 
 
 

@@ -11,6 +11,7 @@ import { Grid } from 'gridjs'
 import 'gridjs/dist/theme/mermaid.css'
 import notify from './ui/notification'
 import subscribeButton from './domains/channels/subscribe-button.js'
+import { shareVideo } from './domains/videos/share.js'
 
 Alpine.data('sqlEditor', function () {
   let view = null
@@ -111,6 +112,7 @@ Alpine.store('theme', {
 
 Alpine.store('notify', notify)
 Alpine.data('subscribeButton', subscribeButton)
+Alpine.magic('shareVideo', () => shareVideo)
 
 window.Alpine = Alpine
 Alpine.start()

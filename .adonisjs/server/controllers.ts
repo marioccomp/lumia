@@ -11,6 +11,6 @@ export const controllers = {
   Likes: () => import('#controllers/likes_controller'),
   NewAccount: () => import('#controllers/new_account_controller'),
   Session: () => import('#controllers/session_controller'),
-  Videos: () => import('#controllers/videos_controller'),
   UserSubscribes: () => import('#controllers/user_subscribes_controller'),
+  Videos: () => import('#controllers/videos_controller'),
 }

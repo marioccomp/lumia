@@ -9,6 +9,8 @@ import { EditorView, basicSetup } from 'codemirror'
 import { sql } from '@codemirror/lang-sql'
 import { Grid } from 'gridjs'
 import 'gridjs/dist/theme/mermaid.css'
+import notify from './ui/notification'
+import subscribeButton from './domains/channels/subscribe-button.js'
 
 Alpine.data('sqlEditor', function () {
   let view = null
@@ -107,6 +109,10 @@ Alpine.store('theme', {
   },
 })
 
+Alpine.store('notify', notify)
+Alpine.data('subscribeButton', subscribeButton)
+
+window.Alpine = Alpine
 Alpine.start()
 
 const wrapper = document.getElementById('wrapper')
@@ -180,21 +186,4 @@ if (modal) {
   })
 
   cancelBtn.addEventListener('click', () => modal.close())
-}
-
-async function toggleLike(liked, countId, iconId, videoId) {
-  const response = await fetch(`/videos/${videoId}/like`, {
-    method: liked ? 'DELETE' : 'POST',
-    headers: { 'X-CSRF-TOKEN': '{{csrfToken}}' },
-  })
-
-  if (!response.ok) return
-
-  liked = !liked
-  const count = document.getElementById(countId)
-  const icon = document.getElementById(iconId)
-  icon.classList.toggle('icon-[tabler--thumb-up-filled]', liked)
-  icon.classList.toggle('icon-[tabler--thumb-up]', !liked)
-
-  count.textContent = Number(count.textContent) + (liked ? 1 : -1)
 }

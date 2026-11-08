@@ -256,6 +256,11 @@ export default class VideosController {
         subscribed ? (hasSubscribed = true) : ''
       }
 
+      const subscribers = await UserSubscribe.query()
+        .where('channel_id', video.user.id)
+        .count('* as total')
+      const subscribersCount = Number(subscribers[0].$extras.total)
+
       return view.render('pages/videos/show', {
         video,
         videoUrl: storage.url(video.storageKey),
@@ -265,6 +270,7 @@ export default class VideosController {
         likesCount,
         hasSaved,
         hasSubscribed,
+        subscribersCount,
       })
     } catch (e) {
       throw e

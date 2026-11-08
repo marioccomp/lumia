@@ -8,8 +8,9 @@ export const controllers = {
   Datasets: () => import('#controllers/datasets_controller'),
   HealthChecks: () => import('#controllers/health_checks_controller'),
   Home: () => import('#controllers/home_controller'),
+  Likes: () => import('#controllers/likes_controller'),
   NewAccount: () => import('#controllers/new_account_controller'),
   Session: () => import('#controllers/session_controller'),
   Videos: () => import('#controllers/videos_controller'),
-  Likes: () => import('#controllers/likes_controller'),
+  UserSubscribes: () => import('#controllers/user_subscribes_controller'),
 }

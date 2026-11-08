@@ -7,10 +7,7 @@
     data-menu
     class="absolute right-2 top-11 z-20 w-60 py-1.5 bg-card text-foreground border border-border rounded-xl shadow-lg text-sm hidden"
   >
-    <li
-      class="px-4 py-2 hover:bg-surface cursor-pointer"
-      onclick="openEditModal(event, {{ id }})"
-    >
+    <li class="px-4 py-2 hover:bg-surface cursor-pointer" onclick="openEditModal(event, {{ id }})">
       Editar detalhes
     </li>
     <li class="px-4 py-2 hover:bg-surface cursor-pointer">Alterar miniatura</li>
@@ -26,7 +23,10 @@
   <div class="relative bg-surface rounded-[10px] overflow-hidden aspect-video">
     <img
       class="w-full h-full object-cover "
-      src="{{ thumbnailUrl || 'https://m.media-amazon.com/images/I/71Tf4-kJHhL._UF1000,1000_QL80_.jpg' }}"
+      src="{{
+        thumbnailUrl ||
+        'https://m.media-amazon.com/images/I/71Tf4-kJHhL._UF1000,1000_QL80_.jpg'
+      }}"
       alt=""
     />
     @if(course)
@@ -111,8 +111,9 @@
       return alert(body?.errors?.[0]?.message ?? 'Não foi possível editar o vídeo');
     }
 
-    document.querySelector(`[data-card][data-video-id="${videoId}"] [data-card-title]`).textContent =
-      data.title;
+    document.querySelector(
+      `[data-card][data-video-id="${videoId}"] [data-card-title]`,
+    ).textContent = data.title;
   }
 
   function details(e, button) {

@@ -83,6 +83,19 @@ export class SavedVideoSchema extends BaseModel {
   declare videoId: number
 }
 
+export class UserSubscribeSchema extends BaseModel {
+  static $columns = ['channelId', 'createdAt', 'id', 'subscriberId'] as const
+  $columns = UserSubscribeSchema.$columns
+  @column()
+  declare channelId: number
+  @column.dateTime({ autoCreate: true })
+  declare createdAt: DateTime | null
+  @column({ isPrimary: true })
+  declare id: number
+  @column()
+  declare subscriberId: number
+}
+
 export class UserSchema extends BaseModel {
   static $columns = ['createdAt', 'email', 'fullName', 'id', 'password', 'updatedAt'] as const
   $columns = UserSchema.$columns

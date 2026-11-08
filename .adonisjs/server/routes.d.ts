@@ -12,6 +12,8 @@ export type ScannedRoutes = {
     'session.create': { paramsTuple?: []; params?: {} }
     'session.store': { paramsTuple?: []; params?: {} }
     'session.destroy': { paramsTuple?: []; params?: {} }
+    'user_subscribes.subscribe': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'user_subscribes.unsubscribe': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'videos.create': { paramsTuple?: []; params?: {} }
     'videos.created': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'videos.store': { paramsTuple?: []; params?: {} }
@@ -64,6 +66,7 @@ export type ScannedRoutes = {
     'new_account.store': { paramsTuple?: []; params?: {} }
     'session.store': { paramsTuple?: []; params?: {} }
     'session.destroy': { paramsTuple?: []; params?: {} }
+    'user_subscribes.subscribe': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'videos.store': { paramsTuple?: []; params?: {} }
     'comments.create': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'likes.store': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
@@ -72,6 +75,7 @@ export type ScannedRoutes = {
     'dataset.execute': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
   }
   DELETE: {
+    'user_subscribes.unsubscribe': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'videos.unsave': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'likes.delete': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'comments.delete': { paramsTuple: [ParamValue,ParamValue]; params: {'id': ParamValue,'commentId': ParamValue} }

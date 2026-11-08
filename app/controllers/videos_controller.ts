@@ -11,6 +11,7 @@ import cache from '@adonisjs/cache/services/main'
 import listVideos from '#services/videos/list_videos'
 import Like from '#models/like'
 import SavedVideo from '#models/saved_video'
+import UserSubscribe from '#models/user_subscribe'
 export default class VideosController {
   async create({ view }: HttpContext) {
     return view.render('pages/videos/create/index')
@@ -181,7 +182,11 @@ export default class VideosController {
       const id = params.id
       const ip = request.ip()
 
-      const video = await Video.query().where('id', id).where('visibility', 'public').firstOrFail()
+      const video = await Video.query()
+        .where('id', id)
+        .where('visibility', 'public')
+        .preload('user')
+        .firstOrFail()
 
       logger.info(video.$attributes, 'Video encontrado')
       logger.info(user?.$attributes, 'User encontrado')
@@ -230,17 +235,25 @@ export default class VideosController {
       const likesCount = Number(likes[0].$extras.total)
       let hasLiked = false
       let hasSaved = false
+      let hasSubscribed = false
       if (user) {
         const like = await Like.query()
           .where('video_id', video.id)
           .where('user_id', user.id)
           .first()
         like ? (hasLiked = true) : ''
+
         const saved = await SavedVideo.query()
           .where('video_id', video.id)
           .where('user_id', user.id)
           .first()
         saved ? (hasSaved = true) : ''
+
+        const subscribed = await UserSubscribe.query()
+          .where('subscriber_id', user.id)
+          .where('channel_id', video.user.id)
+          .first()
+        subscribed ? (hasSubscribed = true) : ''
       }
 
       return view.render('pages/videos/show', {
@@ -251,6 +264,7 @@ export default class VideosController {
         hasLiked,
         likesCount,
         hasSaved,
+        hasSubscribed,
       })
     } catch (e) {
       throw e

@@ -28,6 +28,8 @@ router
 router
   .group(() => {
     router.post('logout', [controllers.Session, 'destroy'])
+    router.post('/:id/subscribe', [controllers.UserSubscribes, 'subscribe'])
+    router.delete('/:id/subscribe', [controllers.UserSubscribes, 'unsubscribe'])
     router.get('/videos/new', [controllers.Videos, 'create']).as('videos.create')
     router.get('/videos/new/:id', [controllers.Videos, 'created']).as('videos.created')
     router.post('/videos/new', [controllers.Videos, 'store']).as('videos.store')

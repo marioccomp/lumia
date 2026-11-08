@@ -181,3 +181,20 @@ if (modal) {
 
   cancelBtn.addEventListener('click', () => modal.close())
 }
+
+async function toggleLike(liked, countId, iconId, videoId) {
+  const response = await fetch(`/videos/${videoId}/like`, {
+    method: liked ? 'DELETE' : 'POST',
+    headers: { 'X-CSRF-TOKEN': '{{csrfToken}}' },
+  })
+
+  if (!response.ok) return
+
+  liked = !liked
+  const count = document.getElementById(countId)
+  const icon = document.getElementById(iconId)
+  icon.classList.toggle('icon-[tabler--thumb-up-filled]', liked)
+  icon.classList.toggle('icon-[tabler--thumb-up]', !liked)
+
+  count.textContent = Number(count.textContent) + (liked ? 1 : -1)
+}

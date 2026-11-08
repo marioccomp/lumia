@@ -22,11 +22,6 @@ export default class SessionController {
     const { email, password } = request.all()
     const user = await User.verifyCredentials(email, password)
 
-    const html = await renderEmail('emails/welcome_email', { user })
-    await mail.send((message) => {
-      message.to(user.email).subject('Welcome to our app!').html(html)
-    })
-    await auth.use('web').login(user)
     response.redirect().toRoute('home')
   }
 

@@ -19,7 +19,7 @@ export default class VideosController {
 
   async list({ view }: HttpContext) {
     const videos = await cache.getOrSet({
-      key: 'home:videos',
+      key: 'videos:list',
       ttl: '5m',
       factory: async () => {
         const rows = await listVideos({

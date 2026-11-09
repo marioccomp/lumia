@@ -20,6 +20,7 @@ export default async function listVideos({
     .if(filters.userId !== undefined, (q) => q.where('videos.user_id', filters.userId!))
     .if(filters.status, (q) => q.where('videos.status', filters.status!))
     .if(filters.visibility, (q) => q.where('videos.visibility', filters.visibility!))
+    .preload('user')
 
   if (withViews) {
     query

@@ -1,5 +1,8 @@
 <main
   data-card
+  data-title="{{ title }}"
+  data-description="{{ description ?? '' }}"
+  x-data="videoCard({videoId: {{ id }}})"
   data-video-id="{{ id }}"
   class=" relative flex flex-col border-1 p-2 pb-3 rounded-2xl gap-2.5"
 >
@@ -7,15 +10,17 @@
     data-menu
     class="absolute right-2 top-11 z-20 w-60 py-1.5 bg-card text-foreground border border-border rounded-xl shadow-lg text-sm hidden"
   >
-    <li class="px-4 py-2 hover:bg-surface cursor-pointer" onclick="openEditModal(event, {{ id }})">
+    <li class="px-4 py-2 hover:bg-surface cursor-pointer" @click.prevent="openEdit()">
       Editar detalhes
     </li>
-    <li class="px-4 py-2 hover:bg-surface cursor-pointer">Alterar miniatura</li>
+    <li class="px-4 py-2 hover:bg-surface cursor-pointer"">
+      Alterar miniatura
+    </li>
     <li class="px-4 py-2 hover:bg-surface cursor-pointer">Copiar link</li>
     <li class="px-4 py-2 hover:bg-surface cursor-pointer">Tornar não listado</li>
     <li
       class="px-4 py-2 hover:bg-surface cursor-pointer"
-      onclick="openDeleteModal(event, {{ id }})"
+       @click.prevent="openDelete()"
     >
       Excluir vídeo
     </li>
@@ -33,6 +38,7 @@
       <p class="absolute top-2 left-2">Curso</p>
       <p class="text-center">60%</p>
     @end
+    @if(auth.user?.id === channelId)
 
     <div
       class="absolute top-2 right-2 bg-black/55 rounded-lg flex flex-col items-center justify-center max-w-[20px] max-h-[20px] w-full h-full"
@@ -42,15 +48,17 @@
         onclick="details(event, this)"
       ></p>
     </div>
+    @end
+
   </div>
   {{-- Falta adaptar a parte abaixo para cursos tambem, seguindo o que esta no figma --}}
   <div class="flex flex-col gap-[5px]">
-    <h2 data-card-title class="font-semibold text-sm leading-[20px]">{{ title }}</h2>
+    <h2 data-card-title class="font-semibold text-sm leading-[20px]" x-text="title">{{ title }}</h2>
     <div class="flex flex-col gap-[1px]">
       <p class="font-normal text-muted-foreground text-xs">{{ channel }} · {{ duration }}</p>
       <p class="font-normal text-muted-foreground text-xs">
         {{ views }}
-        visualizações · há
+        visualizações ·
         {{ postedAt }}
       </p>
     </div>
@@ -108,7 +116,7 @@
     });
     if (!response.ok) {
       const body = await response.json().catch(() => null);
-      return alert(body?.errors?.[0]?.message ?? 'Não foi possível editar o vídeo');
+      return alert(body?.message ?? 'Não foi possível editar o vídeo');
     }
 
     document.querySelector(

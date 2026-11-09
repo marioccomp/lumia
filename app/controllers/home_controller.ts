@@ -6,6 +6,7 @@ import cache from '@adonisjs/cache/services/main'
 import type { HttpContext } from '@adonisjs/core/http'
 import logger from '@adonisjs/core/services/logger'
 import listVideos from '#services/videos/list_videos'
+import { DateTime } from 'luxon'
 
 export default class HomeController {
   async show({ view }: HttpContext) {
@@ -23,10 +24,18 @@ export default class HomeController {
           views: Number(v.$extras.views_count),
           thumbnailUrl: v.thumbnailKey ? storage.url(v.thumbnailKey) : null,
           url: storage.url(v.storageKey),
+          channelId: v.user.id,
+          channel: v.user.fullName ?? v.user.email,
+          createdAt: v.createdAt.toISO(),
         }))
       },
     })
     logger.info(videos, 'videos encontrados com a query')
-    return view.render('pages/home', { videos })
+    return view.render('pages/home', {
+      videos: videos.map((v) => ({
+        ...v,
+        postedAt: DateTime.fromISO(v.createdAt!).toRelative(),
+      })),
+    })
   }
 }

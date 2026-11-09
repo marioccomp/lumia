@@ -16,3 +16,56 @@ export const signupValidator = vine.create({
     confirmationField: 'passwordConfirmation',
   }),
 })
+
+export const updateChannelValidator = vine
+  .withMetaData<{ userId: number }>()
+  .create({
+    fullName: vine.string().trim().maxLength(50).nullable(),
+
+    username: vine.string().trim().toLowerCase().minLength(3).maxLength(30).regex(/^[a-z0-9_]+$/).unique({
+        table: 'users',
+        column: 'username',
+        filter: (query, _value, field) => {
+          query.whereNot('id', field.meta.userId)
+        },
+      })
+      .nullable(),
+
+    bio: vine.string().trim().maxLength(300).nullable().optional(),
+
+    cover: vine.file({
+        size: '5mb',
+        extnames: ['jpg', 'jpeg', 'png', 'webp'],
+      })
+      .optional(),
+
+    avatar: vine.file({
+        size: '5mb',
+        extnames: ['jpg', 'jpeg', 'png', 'webp'],
+      })
+      .optional(),
+  
+    links: vine.array(
+      vine.object({
+        type: vine.enum([
+          'site',
+          'linkedin',
+          'github',
+          'instagram',
+          'youtube',
+          'outro',
+        ]),
+        title: vine.string().trim().minLength(1).maxLength(50).optional().requiredWhen('type', '=','outro'),
+        url: vine
+          .string()
+          .trim()
+          .maxLength(2048)
+          .url({
+            protocols: ['http', 'https'],
+            require_protocol: true,
+          }),
+      })
+    )
+    .maxLength(5)
+    .optional(),
+})

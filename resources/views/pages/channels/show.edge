@@ -1,24 +1,22 @@
 @layout()
   <section class="flex flex-col gap-6" x-data="{abaAtiva: 'videos'}">
     <div
-  class="relative h-36 w-full rounded-card border border-border bg-linear-to-r from-primary/35 to-primary sm:h-44"
-    >
-        @if(isOwner)
-            @!ui.button({
-            text: 'Editar capa',
-            variant: 'secondary',
-            disabled: true,
-            class:
-                'absolute bottom-4 right-4 text-sm disabled:cursor-not-allowed disabled:opacity-60',
-            })
-        @end
+  class="relative h-36 w-full overflow-hidden rounded-card border border-border bg-linear-to-r from-primary/35 to-primary sm:h-44">
+      @if(coverUrl)
+        <img
+          src="{{ coverUrl }}"
+          alt="Capa do canal"
+          class="absolute inset-0 size-full object-cover"
+        />
+      @end
     </div>
 
     <div class="flex flex-wrap items-start gap-4">
       @!avatar({
         initials: channelUser.initials,
-        class:
-          'size-20 shrink-0 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-2xl font-semibold',
+        src: avatarUrl,
+        alt: 'Foto do canal',
+        class:'size-20 shrink-0 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-2xl font-semibold object-cover',
       })
 
       <div class="min-w-0 flex flex-col gap-2">
@@ -38,30 +36,18 @@
           {{ channelUser.createdAt.toFormat('dd/MM/yyyy') }}
         </p>
 
-        <p class="text-sm text-muted-foreground">
-          Conteúdo sobre programação, tecnologia e aprendizado.
-        </p>
-
       </div>
       @if(isOwner)
         <div class="flex w-full flex-wrap gap-2 lg:ml-auto lg:w-auto">
-            @!ui.button({
-            text: 'Editar canal',
-            variant: 'secondary',
-            disabled: true,
-            class: 'text-sm disabled:cursor-not-allowed disabled:opacity-60',
+            @!link({
+              route: 'channels.edit',
+              text: 'Editar canal',
+              class:
+                'inline-flex items-center justify-center rounded-control border border-border bg-surface px-3 py-2 text-sm text-foreground transition-colors hover:bg-border',
             })
-
-            @!ui.button({
-            text: 'Ver como visitante',
-            variant: 'ghost',
-            disabled: true,
-            class: 'text-sm disabled:cursor-not-allowed disabled:opacity-60',
-            })
-        </div>
-        @end
     </div>
-
+      @end
+    </div>
     @let(channelStats = [
     { label: 'Inscritos', value: '8 bilhões, pai ta chato' },
     { label: 'Vídeos', value: 'Alguns tlgs' },
@@ -148,9 +134,27 @@
 
     <div x-show="abaAtiva === 'sobre'" style="display: none">
     <h2 class="mb-3 text-lg font-semibold">Sobre o canal</h2>
-    <p class="text-sm text-muted-foreground">
-        Conteúdo sobre programação, tecnologia e aprendizado.
+    <p class="whitespace-pre-line break-words text-sm text-muted-foreground">
+      {{ channelUser.bio || 'Este canal ainda não tem uma bio.' }}
     </p>
+
+    @if(channelUser.links.length)
+      <div class="mt-6 flex flex-col items-start gap-2">
+        <h3 class="text-sm font-semibold">Links</h3>
+
+        @each(channelLink in channelUser.links)
+          @link({
+            href: channelLink.url,
+            target: '_blank',
+            rel: 'noopener noreferrer',
+            class: 'inline-flex max-w-full items-center gap-3 rounded-control border border-border bg-surface px-3 py-2 text-sm transition-colors hover:bg-border',
+          })
+            <span class="shrink-0 font-medium">{{ channelLink.title }}</span>
+            <span class="truncate text-muted-foreground">{{ channelLink.url }}</span>
+          @end
+        @end
+      </div>
+    @end
     </div>
 
   </section>

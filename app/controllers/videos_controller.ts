@@ -42,7 +42,7 @@ export default class VideosController {
 
     request.multipart.onFile(
       'thumbnail',
-      { size: '5mb', extnames: ['jpg', 'jpeg', 'png', 'webp'] },
+      { size: '300mb', extnames: ['jpg', 'jpeg', 'png', 'webp'] },
       async (part, reporter) => {
         part.pause()
         part.on('data', reporter)

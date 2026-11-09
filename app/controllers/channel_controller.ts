@@ -5,20 +5,60 @@ import storage from '#services/storage/index'
 import { updateChannelValidator } from '#validators/user'
 import db from '@adonisjs/lucid/services/db'
 import ChannelLink from '#models/channel_link'
+import Video from '#models/video'
+import View from '#models/view'
+import UserSubscribe from '#models/user_subscribe'
 
 export default class ChannelController {
   async me({ auth, view }: HttpContext) {
     const channelUser = auth.getUserOrFail()
-    
+
     await channelUser.load('links', (query) => {
       query.orderBy('position', 'asc')
     })
 
+    const [subscribers, videos, courses, views] = await Promise.all([
+      UserSubscribe.query()
+        .where('channelId', channelUser.id)
+        .count('* as total'),
+
+      Video.query()
+        .where('userId', channelUser.id)
+        .where('status', 'ready')
+        .where((query) => {
+          query.where('course', false).orWhereNull('course')
+        })
+        .count('* as total'),
+
+      Video.query()
+        .where('userId', channelUser.id)
+        .where('status', 'ready')
+        .where('course', true)
+        .count('* as total'),
+
+      View.query()
+        .whereIn(
+          'videoId',
+          Video.query().select('id').where('userId', channelUser.id)
+        )
+        .count('* as total'),
+    ])
+
     return view.render('pages/channels/show', {
       channelUser,
       isOwner: true,
-      avatarUrl: channelUser.avatarKey ? storage.url(channelUser.avatarKey): null,
-      coverUrl: channelUser.coverKey ? storage.url(channelUser.coverKey) : null,
+      avatarUrl: channelUser.avatarKey
+        ? storage.url(channelUser.avatarKey)
+        : null,
+      coverUrl: channelUser.coverKey
+        ? storage.url(channelUser.coverKey)
+        : null,
+      stats: {
+        subscribers: Number(subscribers[0].$extras.total ?? 0),
+        videos: Number(videos[0].$extras.total ?? 0),
+        courses: Number(courses[0].$extras.total ?? 0),
+        views: Number(views[0].$extras.total ?? 0),
+      },
     })
   }
 

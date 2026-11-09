@@ -120,6 +120,7 @@ export default class VideosController {
         storageKey: key,
         thumbnailKey: thumbnailKey ?? null,
         visibility: data.visibility,
+        course: data.course ?? false,
       })
 
       videoSaved = true

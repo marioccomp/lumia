@@ -49,10 +49,10 @@
       @end
     </div>
     @let(channelStats = [
-    { label: 'Inscritos', value: '8 bilhões, pai ta chato' },
-    { label: 'Vídeos', value: 'Alguns tlgs' },
-    { label: 'Cursos', value: 'Segredo' },
-    { label: 'Visualizações', value: 'Mais que o Mr Beast' },
+    { label: 'Inscritos', value: stats.subscribers.toLocaleString('pt-BR'), },
+    { label: 'Vídeos', value: stats.videos.toLocaleString('pt-BR'), },
+    { label: 'Cursos', value: stats.courses.toLocaleString('pt-BR'), },
+    { label: 'Visualizações', value: stats.views.toLocaleString('pt-BR'), },
     ])
 
     <dl class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">

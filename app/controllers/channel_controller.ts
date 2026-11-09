@@ -116,7 +116,12 @@ export default class ChannelController {
 
   await Promise.allSettled(oldKeys.map((key) => storage.delete(key)))
 
-  session.flash('success', 'Perfil atualizado com sucesso.')
+  session.flash('notification', {
+  title: 'Canal atualizado',
+  message: 'Suas alterações foram salvas com sucesso.',
+  status: 'success',
+  })
+
   return response.redirect().toRoute('channels.me')
 }
 }

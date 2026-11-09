@@ -1,44 +1,233 @@
 @layout()
-  <p>abaixo seguem informações do video</p>
-  <p>{{ video.title }}</p>
-  <p>{{ video.description || 'Sem descrição' }}</p>
+  <div class="w-full max-w-[850px] flex flex-col gap-[20px]">
+    <media-player
+      title="{{ video.title }}"
+      src="{{ videoUrl }}"
+      playsinline
+      class="w-full max-w-[850px] aspect-video"
+    >
+      <media-provider></media-provider>
+      <media-video-layout></media-video-layout>
+    </media-player>
 
-  <media-player
-    title="{{ video.title }}"
-    src="{{ videoUrl }}"
-    playsinline
-    class="w-full max-w-[850px] aspect-video"
-  >
-    <media-provider></media-provider>
-    <media-video-layout></media-video-layout>
-  </media-player>
-  @form({
-    method: 'POST',
-    action: `/videos/${video.id}/comments`,
-    class: 'flex flex-col gap-2 max-w-[50%] w-full',
-  })
-    <h3>Abaixo você pode comentar</h3>
-    @!ui.input({
-      name: 'text',
-      label: 'Faça um comentário',
-      multiline: true,
-      rows: 5,
-    })
-    @!ui.button({
-      text: ' Enviar comentário',
-      type: 'submit',
-    })
-  @end
-
-  <div class="flex flex-col gap-4 mt-4">
-    @each(comment in comments)
-      <div>
-        <p class="text-bold">{{ comment.user.fullName }}</p>
-        <p>{{ comment.text }}</p>
-        <p class="text-sm">{{ comment.createdAt.toRelative() }}</p>
+    <p class="font-semibold text-[22px] text-foreground">{{ video.title }}</p>
+    <div class="flex justify-between">
+      <div
+        class="flex items-center gap-[12px]"
+        x-data="subscribeButton({userId: {{ video.user.id }}, subscribed: {{ hasSubscribed }}, count: {{ subscribersCount }}})"
+      >
+        @!avatar({
+          initials: video.user.initials,
+          class:
+            'cursor-pointer bg-primary rounded-2xl w-[30px] h-[30px] text-primary-foreground flex justify-center items-center font-[600] text-xs',
+        })
+        <div>
+          <p class="font-semibold text-sm text-foreground">{{ video.user.fullName }}</p>
+          <p class="text-xs font-normal text-muted-foreground">
+            <span id="subscribers-count" x-text="count">{{ subscribersCount }}</span>
+            inscritos
+          </p>
+        </div>
+        @if(auth.user?.id !== video.user.id)
+          @!ui.button({
+            text: hasSubscribed ? 'Inscrito' : 'Inscrever-se',
+            variant: 'none',
+            class: 'px-[20px] py-[10px]',
+            'x-text': 'label',
+            ':class': 'buttonClass',
+            '@click': 'toggle()',
+            ':disabled': 'loading',
+          })
+        @end
       </div>
-    @else
-      <p>Nenhum comentário ainda</p>
-    @end
+
+      <div class="flex border w-full max-w-[320px] items-center justify-center px-4 relative">
+        <p
+          onclick="toggleLike()"
+          class="cursor-pointer text-foreground font-medium text-[13px] w-full max-w-[33%] py-3 flex items-center gap-1"
+        >
+          <span
+            class="{{
+              hasLiked
+                ? 'icon-[tabler--thumb-up-filled]'
+                : 'icon-[tabler--thumb-up]'
+            }}"
+            id="like-icon"
+          ></span>
+          <span id="likes-count">{{ likesCount }}</span>
+        </p>
+        <span class="icon-[lucide--tally-1] absolute left-[28.75%]"></span>
+
+        <p
+          onclick="toggleSave()"
+          class="cursor-pointer  text-foreground font-medium text-[13px] w-full max-w-[33%] py-3 flex items-center gap-1"
+        >
+          <span class="icon-[lucide--save]"></span>
+          Salvar
+        </p>
+        <span class="icon-[lucide--tally-1] absolute right-[35.75%]"></span>
+
+        <p
+          class="cursor-pointer  text-foreground font-medium text-[13px] w-full max-w-[33%] py-3 flex items-center gap-1"
+          x-data
+          @click="$shareVideo({{ video.id }})"
+        >
+          <span class="icon-[lucide--share]"></span>
+          Compartilhar
+        </p>
+      </div>
+    </div>
+
+    <div class="flex flex-col p-[16px] gap-[8px] bg-surface rounded-xl w-full">
+      <div>
+        <p class="font-medium text-muted-foreground text-xs">
+          {{ viewsCount }}
+          visualizações ·
+          {{ video.createdAt.toRelative() }}
+        </p>
+      </div>
+
+      <p class="text-foreground font-normal text-sm">{{ video.description }}</p>
+    </div>
+    <div>
+      @form({
+        method: 'POST',
+        action: `/videos/${video.id}/comments`,
+        class: 'flex flex-col gap-2 w-full',
+      })
+        <h3 class="text-foreground font-semibold text-base">{{ comments.length }} comentários</h3>
+        <div class="flex flex-col gap-2">
+          <div class="flex gap-4 items-center">
+            @!avatar({
+              initials: auth.user?.initials,
+              class:
+                'cursor-pointer bg-primary rounded-2xl w-[30px] h-[30px] text-primary-foreground flex justify-center items-center font-[600] text-xs',
+            })
+            @!ui.input({
+              name: 'text',
+              label: 'Comentário',
+              multiline: true,
+              rows: 1,
+            })
+          </div>
+          @!ui.button({
+            text: 'Enviar',
+            type: 'submit',
+            class: 'self-end',
+          })
+        </div>
+      @end
+
+      <div class="flex flex-col gap-4 mt-4">
+        @each(comment in comments)
+          <div class="flex gap-[12px] items-start">
+            @!avatar({
+              initials: comment.user.initials,
+              class:
+                'cursor-pointer bg-primary rounded-2xl w-[30px] h-[30px] text-primary-foreground flex justify-center items-center font-[600] text-xs',
+            })
+            <div class="flex flex-col gap-[3px]">
+              <div class="flex gap-2 items-center">
+                <p class="text-semibold text-13px text-foreground">{{ comment.user.fullName }}</p>
+                <p class="text-[11.5px] text-muted-foreground font-normal">
+                  {{ comment.createdAt.toRelative() }}
+                </p>
+              </div>
+
+              <p class="text-foreground font-normal text-[13.5px] leading-[20px]">
+                {{ comment.text }}
+              </p>
+              <div class="flex gap-3">
+                <p class="text-muted-foreground text-[11.5px] font-medium flex gap-2 items-center">
+                  <span class="cursor-pointer icon-[lucide--thumbs-up]"></span>24
+                </p>
+                <p class="text-muted-foreground text-[11.5px] font-medium cursor-pointer">
+                  Responder
+                </p>
+              </div>
+            </div>
+          </div>
+        @else
+          <p>Nenhum comentário ainda</p>
+        @end
+      </div>
+    </div>
   </div>
+  <script>
+
+
+
+
+
+
+
+
+
+
+                                              let subscribed = {{hasSubscribed ? 'true' : 'false'}}
+
+                                              let liked = {{hasLiked ? 'true' : 'false'}}
+                                              let saved = {{hasSaved ? 'true' : 'false'}}
+                                              async function toggleLike() {
+                                                const response = await fetch(`/videos/{{video.id}}/like`, {
+                                                  method: liked ? 'DELETE' : 'POST',
+                                                  headers: { 'X-CSRF-TOKEN': '{{csrfToken}}' },
+                                                });
+
+                                                if(!response.ok) return
+
+                                                liked = !liked;
+                                                const count = document.getElementById('likes-count');
+                                                const icon = document.getElementById('like-icon')
+                                                icon.classList.toggle('icon-[tabler--thumb-up-filled]', liked)
+                                                icon.classList.toggle('icon-[tabler--thumb-up]', !liked)
+
+                                                count.textContent = Number(count.textContent) + (liked ? 1 : -1);
+                                              }
+
+                                            async function toggleSave() {
+                                                const response = await fetch(`/videos/{{video.id}}/save`, {
+                                                  method: saved ? 'DELETE' : 'POST',
+                                                  headers: { 'X-CSRF-TOKEN': '{{csrfToken}}' },
+                                                });
+
+                                                if(!response.ok) return
+
+                                                saved = !saved;
+                                                Alpine.store('notify').show('Video salvo', 'Sua lista foi atualizada')
+
+                                              }
+
+                                              const PRIMARY = ['bg-primary', 'text-primary-foreground', 'hover:bg-primary-hover']
+                                          const SECONDARY = ['bg-surface', 'text-foreground', 'border', 'border-border', 'hover:bg-border']
+                                              async function toggleSubscribe() {
+                                                const response = await fetch(`/{{video.user.id}}/subscribe`, {
+                                                  method: subscribed ? 'DELETE' : 'POST',
+                                                  headers: { 'X-CSRF-TOKEN': '{{csrfToken}}' },
+                                                });
+
+                                                if(!response.ok) return
+                                                subscribed = !subscribed;
+
+                                                const button = document.getElementById('subscribe-btn')
+
+                                                  button.classList.remove(...(subscribed ? PRIMARY : SECONDARY))
+                                          button.classList.add(...(subscribed ? SECONDARY : PRIMARY))
+                                          button.textContent = subscribed ? 'Inscrito' : 'Inscrever-se'
+
+                                                const count = document.getElementById('subscribers-count');
+
+                                                count.textContent = Number(count.textContent) + (subscribed ? 1 : -1);
+                                              }
+
+
+
+
+
+
+
+
+
+
+  </script>
 @end

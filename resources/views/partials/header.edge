@@ -1,4 +1,4 @@
-<header class="bg-background px-10 py-5 border-b">
+<header class="bg-background px-10 py-5 border-b relative">
   <div class="flex items-center gap-[32px]">
     <div class="shrink-0 flex">
       @link({ route: 'home', text: 'Home' })
@@ -76,6 +76,11 @@
               ></span>
             @end
 
+          <div
+            class="opcoes absolute top-full -right-30 mt-3 w-46 p-2 bg-card text-foreground border rounded-control shadow-md z-50"
+            x-show="open"
+            x-cloak
+          >
             <a
               href="/videos/new"
               class="flex items-center gap-2 w-full text-left px-3 py-2 text-sm rounded-control hover:bg-surface transition-colors"

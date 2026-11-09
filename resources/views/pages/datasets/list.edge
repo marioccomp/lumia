@@ -1,0 +1,11 @@
+@layout()
+  <h1>Datasets</h1>
+
+  <ul>
+    @each(dataset in datasets)
+      <a href="{{ urlFor('dataset.show', { id: dataset.id }) }}">
+        <li>{{ dataset.name }} - {{ dataset.rowCount }} linhas</li>
+      </a>
+    @end
+  </ul>
+@end

@@ -1,0 +1,32 @@
+<div class="sticky top-0 z-50 h-0">
+  <div
+    class="flex flex-col py-[13px] pr-[12px] pl-[14px] gap-[11px] rounded-xl bg-background shadow-[0px_8px_24px_-4px_rgba(0,0,0,0.14)] max-w-[264px] w-full absolute -right-2 top-4 border text-primary-text transition-all duration-300 ease-out"
+    id="notification-div"
+    x-data
+    :class="$store.notify.visible
+      ? 'opacity-100 translate-y-0 scale-100'
+      : 'opacity-0 -translate-y-2 scale-95 pointer-events-none'"
+    x-cloak
+  >
+    <div class="flex gap-[11px]">
+      <span
+        id="notification-icon"
+        :class="{
+          'icon-[lucide--check]': $store.notify.status === 'success',
+          'icon-[lucide--info]': $store.notify.status === 'info',
+          'icon-[lucide--triangle-alert]': $store.notify.status === 'error'
+          }"
+      ></span>
+      <p
+        id="notification-title"
+        class="font-semibold text-[13px] leading-[16px] text-foreground"
+        x-text="$store.notify.title"
+      ></p>
+    </div>
+    <p
+      id="notification-message"
+      x-text="$store.notify.message"
+      class="font-normal text-[12px] leading-[17px] text-muted-foreground"
+    ></p>
+  </div>
+</div>

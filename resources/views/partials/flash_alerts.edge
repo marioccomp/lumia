@@ -6,7 +6,7 @@
   @end
   @if(flashMessages.has('success'))
     @alert.root({ variant: 'success', autoDismiss: true })
-      @!alert.description({ text: flashMessages.get('success') })
+      @!alert.description({ text: flashMessages.get('success') || 'Teste' })
     @end
   @end
 </div>

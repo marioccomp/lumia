@@ -10,6 +10,10 @@
   --font-sans: 'Inter', sans-serif;
 }
 
+[x-cloak] {
+  display: none !important;
+}
+
 :root {
   /* superfícies */
   --background: #ffffff; /* bg/base */

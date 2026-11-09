@@ -6,17 +6,18 @@
         <a href="/videos">Ver todos</a>
       </div>
 
-      <div class="grid gap-4 grid-cols-[repeat(auto-fill,minmax(320px,1fr))]">
+      <div class="grid gap-4 grid-cols-[repeat(auto-fill,minmax(320px,1fr))]" x-data>
         @each(video in videos)
           <a href="{{ route('videos.show', { id: video.id }) }}">
             @!video.card({
               id: video.id,
               title: video.title,
               thumbnailUrl: video.thumbnailUrl,
-              channel: 'Testando',
+              channelId: video.channelId,
+              channel: video.channel,
               views: video.views,
               duration: '12:34',
-              postedAt: '5 dias',
+              postedAt: video.postedAt,
             })
           </a>
         @end
@@ -47,5 +48,4 @@
       </div>
     </section>
   </div>
-  @!modal({})
 @end

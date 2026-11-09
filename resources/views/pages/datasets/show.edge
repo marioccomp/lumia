@@ -1,0 +1,28 @@
+@layout()
+  <h1>{{ dataset.name }}</h1>
+  @if(dataset.description)
+    <p>{{ dataset.description }}</p>
+  @end
+
+  <p>
+    Abaixo você poderá fazer qualquer consulta SQL de leitura do dataset acima. Lembrando que estamos rodando a engine DuckDB, então caso queira algo específico, consulte a documentação
+  </p>
+
+  <div
+    class="flex flex-col gap-3"
+    x-data="sqlEditor"
+    data-id="{{ dataset.id }}"
+    data-schema="{{ dataset.schema }}"
+  >
+    <div x-ref="editor" class="[&_.cm-editor]:h-64"></div>
+    @!ui.button({
+      '@click': 'executeQuery(getQuery())',
+      text: 'Executar',
+      class: 'self-end',
+    })
+    <p x-show="loading">Executando...</p>
+    <p x-show="error" x-text="error"></p>
+    <p id="sql-preview">Preview do dataset:</p>
+    <div x-ref="result" class="[&_.gridjs-table]:table-auto [&_td]:whitespace-nowrap"></div>
+  </div>
+@end

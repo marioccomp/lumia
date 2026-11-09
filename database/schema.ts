@@ -45,6 +45,78 @@ export class CommentSchema extends BaseModel {
   declare videoId: number
 }
 
+export class DatasetSchema extends BaseModel {
+  static $columns = ['createdAt', 'description', 'downloadsCount', 'format', 'id', 'name', 'originalFilename', 'rowCount', 'schema', 'sizeBytes', 'storageKey', 'updatedAt', 'userId', 'visibility'] as const
+  $columns = DatasetSchema.$columns
+  @column.dateTime({ autoCreate: true })
+  declare createdAt: DateTime | null
+  @column()
+  declare description: string | null
+  @column()
+  declare downloadsCount: number
+  @column()
+  declare format: string
+  @column({ isPrimary: true })
+  declare id: number
+  @column()
+  declare name: string
+  @column()
+  declare originalFilename: string
+  @column()
+  declare rowCount: number | null
+  @column()
+  declare schema: any | null
+  @column()
+  declare sizeBytes: bigint | number
+  @column()
+  declare storageKey: string
+  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  declare updatedAt: DateTime | null
+  @column()
+  declare userId: number
+  @column()
+  declare visibility: string
+}
+
+export class LikeSchema extends BaseModel {
+  static $columns = ['createdAt', 'id', 'userId', 'videoId'] as const
+  $columns = LikeSchema.$columns
+  @column.dateTime({ autoCreate: true })
+  declare createdAt: DateTime | null
+  @column({ isPrimary: true })
+  declare id: number
+  @column()
+  declare userId: number
+  @column()
+  declare videoId: number
+}
+
+export class SavedVideoSchema extends BaseModel {
+  static $columns = ['createdAt', 'id', 'userId', 'videoId'] as const
+  $columns = SavedVideoSchema.$columns
+  @column.dateTime({ autoCreate: true })
+  declare createdAt: DateTime | null
+  @column({ isPrimary: true })
+  declare id: number
+  @column()
+  declare userId: number
+  @column()
+  declare videoId: number
+}
+
+export class UserSubscribeSchema extends BaseModel {
+  static $columns = ['channelId', 'createdAt', 'id', 'subscriberId'] as const
+  $columns = UserSubscribeSchema.$columns
+  @column()
+  declare channelId: number
+  @column.dateTime({ autoCreate: true })
+  declare createdAt: DateTime | null
+  @column({ isPrimary: true })
+  declare id: number
+  @column()
+  declare subscriberId: number
+}
+
 export class UserSchema extends BaseModel {
   static $columns = ['avatarKey', 'bio', 'coverKey', 'createdAt', 'email', 'fullName', 'id', 'password', 'updatedAt', 'username'] as const
   $columns = UserSchema.$columns

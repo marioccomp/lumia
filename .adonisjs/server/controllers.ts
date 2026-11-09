@@ -6,9 +6,12 @@
 export const controllers = {
   Channel: () => import('#controllers/channel_controller'),
   Comments: () => import('#controllers/comments_controller'),
+  Datasets: () => import('#controllers/datasets_controller'),
   HealthChecks: () => import('#controllers/health_checks_controller'),
   Home: () => import('#controllers/home_controller'),
+  Likes: () => import('#controllers/likes_controller'),
   NewAccount: () => import('#controllers/new_account_controller'),
   Session: () => import('#controllers/session_controller'),
+  UserSubscribes: () => import('#controllers/user_subscribes_controller'),
   Videos: () => import('#controllers/videos_controller'),
 }

@@ -18,9 +18,11 @@
   </head>
   <body class="font-sans">
     @include('partials/header')
-    <main class="py-[30px] pl-[32px] pr-[56px]">
+    <main class="py-[30px] pl-[32px] pr-[56px] relative">
+      @include('partials/notifications')
       @include('partials/flash_alerts')
       {{{ await $slots.main() }}}
     </main>
+    @!modal({})
   </body>
 </html>

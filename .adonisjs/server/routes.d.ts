@@ -26,6 +26,9 @@ export type ScannedRoutes = {
     'videos.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'comments.delete': { paramsTuple: [ParamValue,ParamValue]; params: {'id': ParamValue,'commentId': ParamValue} }
     'videos.delete': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'channels.me': { paramsTuple?: []; params?: {} }
+    'channels.edit': { paramsTuple?: []; params?: {} }
+    'channels.update': { paramsTuple?: []; params?: {} }
     'datasets.create': { paramsTuple?: []; params?: {} }
     'datasets.store': { paramsTuple?: []; params?: {} }
     'dataset.execute': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
@@ -42,6 +45,8 @@ export type ScannedRoutes = {
     'session.create': { paramsTuple?: []; params?: {} }
     'videos.create': { paramsTuple?: []; params?: {} }
     'videos.created': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'channels.me': { paramsTuple?: []; params?: {} }
+    'channels.edit': { paramsTuple?: []; params?: {} }
     'datasets.create': { paramsTuple?: []; params?: {} }
     'health_checks.live': { paramsTuple?: []; params?: {} }
     'dataset.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
@@ -56,6 +61,8 @@ export type ScannedRoutes = {
     'session.create': { paramsTuple?: []; params?: {} }
     'videos.create': { paramsTuple?: []; params?: {} }
     'videos.created': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'channels.me': { paramsTuple?: []; params?: {} }
+    'channels.edit': { paramsTuple?: []; params?: {} }
     'datasets.create': { paramsTuple?: []; params?: {} }
     'health_checks.live': { paramsTuple?: []; params?: {} }
     'dataset.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
@@ -84,6 +91,7 @@ export type ScannedRoutes = {
   PUT: {
     'comments.update': { paramsTuple: [ParamValue,ParamValue]; params: {'id': ParamValue,'commentId': ParamValue} }
     'videos.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'channels.update': { paramsTuple?: []; params?: {} }
   }
 }
 declare module '@adonisjs/core/types/http' {

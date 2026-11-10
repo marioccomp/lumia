@@ -22,8 +22,10 @@ export default class SessionController {
     const { email, password } = request.all()
     const user = await User.verifyCredentials(email, password)
 
-    response.redirect().toRoute('home')
-  }
+    await auth.use('web').login(user)
+
+    return response.redirect().toRoute('home')
+}
 
   /**
    * Log out the current user and destroy their session

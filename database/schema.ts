@@ -7,6 +7,27 @@
 import { BaseModel, column } from '@adonisjs/lucid/orm'
 import { DateTime } from 'luxon'
 
+export class ChannelLinkSchema extends BaseModel {
+  static $columns = ['createdAt', 'id', 'position', 'title', 'type', 'updatedAt', 'url', 'userId'] as const
+  $columns = ChannelLinkSchema.$columns
+  @column.dateTime({ autoCreate: true })
+  declare createdAt: DateTime | null
+  @column({ isPrimary: true })
+  declare id: number
+  @column()
+  declare position: number
+  @column()
+  declare title: string
+  @column()
+  declare type: string
+  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  declare updatedAt: DateTime | null
+  @column()
+  declare url: string
+  @column()
+  declare userId: number
+}
+
 export class CommentSchema extends BaseModel {
   static $columns = ['createdAt', 'id', 'text', 'updatedAt', 'userId', 'videoId'] as const
   $columns = CommentSchema.$columns
@@ -97,8 +118,14 @@ export class UserSubscribeSchema extends BaseModel {
 }
 
 export class UserSchema extends BaseModel {
-  static $columns = ['createdAt', 'email', 'fullName', 'id', 'password', 'updatedAt'] as const
+  static $columns = ['avatarKey', 'bio', 'coverKey', 'createdAt', 'email', 'fullName', 'id', 'password', 'updatedAt', 'username'] as const
   $columns = UserSchema.$columns
+  @column()
+  declare avatarKey: string | null
+  @column()
+  declare bio: string | null
+  @column()
+  declare coverKey: string | null
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime
   @column()
@@ -111,11 +138,15 @@ export class UserSchema extends BaseModel {
   declare password: string
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   declare updatedAt: DateTime | null
+  @column()
+  declare username: string | null
 }
 
 export class VideoSchema extends BaseModel {
-  static $columns = ['createdAt', 'description', 'duration', 'error', 'id', 'processedKey', 'progress', 'status', 'storageKey', 'thumbnailKey', 'title', 'updatedAt', 'userId', 'visibility'] as const
+  static $columns = ['course', 'createdAt', 'description', 'duration', 'error', 'id', 'processedKey', 'progress', 'status', 'storageKey', 'thumbnailKey', 'title', 'updatedAt', 'userId', 'visibility'] as const
   $columns = VideoSchema.$columns
+  @column()
+  declare course: boolean | null
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime | null
   @column()

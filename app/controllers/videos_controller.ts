@@ -67,7 +67,7 @@ export default class VideosController {
 
     request.multipart.onFile(
       'thumbnail',
-      { size: '5mb', extnames: ['jpg', 'jpeg', 'png', 'webp'] },
+      { size: '300mb', extnames: ['jpg', 'jpeg', 'png', 'webp'] },
       async (part, reporter) => {
         part.pause()
         part.on('data', reporter)
@@ -120,6 +120,7 @@ export default class VideosController {
         storageKey: key,
         thumbnailKey: thumbnailKey ?? null,
         visibility: data.visibility,
+        course: data.course ?? false,
       })
 
       videoSaved = true

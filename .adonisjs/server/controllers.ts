@@ -4,6 +4,7 @@
  */
 
 export const controllers = {
+  Channel: () => import('#controllers/channel_controller'),
   Comments: () => import('#controllers/comments_controller'),
   Datasets: () => import('#controllers/datasets_controller'),
   HealthChecks: () => import('#controllers/health_checks_controller'),

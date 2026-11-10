@@ -185,7 +185,7 @@ export default class VideosController {
 
       const video = await Video.query()
         .where('id', id)
-        .where('visibility', 'public')
+        .whereIn('visibility', ['public', 'unlisted'])
         .preload('user')
         .firstOrFail()
 
@@ -305,7 +305,7 @@ export default class VideosController {
 
     logger.info(`usuario ${user.fullName} salvando no video id ${id}`)
 
-    const savedVideo = SavedVideo.firstOrCreate({ videoId: id, userId: user.id })
+    const savedVideo = await SavedVideo.firstOrCreate({ videoId: id, userId: user.id })
 
     return response.status(201).json({
       message: 'Video salvo com sucesso',

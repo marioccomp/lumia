@@ -14,4 +14,5 @@ export const controllers = {
   Session: () => import('#controllers/session_controller'),
   UserSubscribes: () => import('#controllers/user_subscribes_controller'),
   Videos: () => import('#controllers/videos_controller'),
+  SavedVideos: () => import('#controllers/saved_videos_controller'),
 }

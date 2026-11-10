@@ -8,6 +8,9 @@ import ChannelLink from '#models/channel_link'
 import Video from '#models/video'
 import View from '#models/view'
 import UserSubscribe from '#models/user_subscribe'
+import SavedVideo from '#models/saved_video'
+import { channel } from 'node:diagnostics_channel'
+import toVideoCard from '#services/videos/to_video_card'
 
 export default class ChannelController {
   async me({ auth, view }: HttpContext) {
@@ -17,10 +20,8 @@ export default class ChannelController {
       query.orderBy('position', 'asc')
     })
 
-    const [subscribers, videos, courses, views] = await Promise.all([
-      UserSubscribe.query()
-        .where('channelId', channelUser.id)
-        .count('* as total'),
+    const [subscribers, videosCount, courses, views, videos, savedVideos] = await Promise.all([
+      UserSubscribe.query().where('channelId', channelUser.id).count('* as total'),
 
       Video.query()
         .where('userId', channelUser.id)
@@ -37,32 +38,46 @@ export default class ChannelController {
         .count('* as total'),
 
       View.query()
-        .whereIn(
-          'videoId',
-          Video.query().select('id').where('userId', channelUser.id)
-        )
+        .whereIn('videoId', Video.query().select('id').where('userId', channelUser.id))
         .count('* as total'),
+
+      Video.query()
+        .where('userId', channelUser.id)
+        .where('status', 'ready')
+        .where((query) => {
+          query.where('course', false).orWhereNull('course')
+        })
+        .orderBy('createdAt', 'desc')
+        .preload('user')
+        .withCount('views'),
+
+      Video.query()
+        .whereIn('id', SavedVideo.query().select('videoId').where('user_id', channelUser.id))
+        .where((query) => {
+          query.whereNot('visibility', 'private').orWhere('userId', channelUser.id)
+        })
+
+        .preload('user')
+        .withCount('views'),
     ])
 
     return view.render('pages/channels/show', {
       channelUser,
       isOwner: true,
-      avatarUrl: channelUser.avatarKey
-        ? storage.url(channelUser.avatarKey)
-        : null,
-      coverUrl: channelUser.coverKey
-        ? storage.url(channelUser.coverKey)
-        : null,
+      avatarUrl: channelUser.avatarKey ? storage.url(channelUser.avatarKey) : null,
+      coverUrl: channelUser.coverKey ? storage.url(channelUser.coverKey) : null,
       stats: {
         subscribers: Number(subscribers[0].$extras.total ?? 0),
-        videos: Number(videos[0].$extras.total ?? 0),
+        videos: Number(videosCount[0].$extras.total ?? 0),
         courses: Number(courses[0].$extras.total ?? 0),
         views: Number(views[0].$extras.total ?? 0),
       },
+      videos: videos.map(toVideoCard),
+      savedVideos: savedVideos.map(toVideoCard),
     })
   }
 
-  async edit({auth, view}: HttpContext){
+  async edit({ auth, view }: HttpContext) {
     const channelUser = auth.getUserOrFail()
 
     await channelUser.load('links', (query) => {
@@ -70,98 +85,89 @@ export default class ChannelController {
     })
 
     return view.render('pages/channels/edit', {
-      channelUser, 
-      avatarUrl: channelUser.avatarKey ? storage.url(channelUser.avatarKey): null,
+      channelUser,
+      avatarUrl: channelUser.avatarKey ? storage.url(channelUser.avatarKey) : null,
       coverUrl: channelUser.coverKey ? storage.url(channelUser.coverKey) : null,
     })
   }
 
   async update({ auth, request, response, session }: HttpContext) {
-  const channelUser = auth.getUserOrFail()
+    const channelUser = auth.getUserOrFail()
 
-  const { avatar, cover, links, ...payload } = await request.validateUsing(
-  updateChannelValidator,
-  { meta: { userId: channelUser.id } }
-)
+    const { avatar, cover, links, ...payload } = await request.validateUsing(
+      updateChannelValidator,
+      { meta: { userId: channelUser.id } }
+    )
 
-  const newKeys: string[] = []
-  const oldKeys: string[] = []
+    const newKeys: string[] = []
+    const oldKeys: string[] = []
 
-  const images = [
-    { file: avatar, attribute: 'avatarKey', directory: 'avatars' },
-    { file: cover, attribute: 'coverKey', directory: 'covers' },
-  ] as const
+    const images = [
+      { file: avatar, attribute: 'avatarKey', directory: 'avatars' },
+      { file: cover, attribute: 'coverKey', directory: 'covers' },
+    ] as const
 
-  try {
-    channelUser.merge(payload)
+    try {
+      channelUser.merge(payload)
 
-    for (const { file, attribute, directory } of images) {
-      if (!file) continue
+      for (const { file, attribute, directory } of images) {
+        if (!file) continue
 
-      if (!file.tmpPath || !file.extname || !file.type || !file.subtype) {
-        throw new Error('Não foi possível processar a imagem enviada.')
+        if (!file.tmpPath || !file.extname || !file.type || !file.subtype) {
+          throw new Error('Não foi possível processar a imagem enviada.')
+        }
+
+        const key = `${channelUser.id}/${directory}/${randomUUID()}.${file.extname}`
+        newKeys.push(key)
+
+        await storage.put(key, createReadStream(file.tmpPath), `${file.type}/${file.subtype}`)
+
+        const oldKey = channelUser[attribute]
+        if (oldKey) oldKeys.push(oldKey)
+
+        channelUser[attribute] = key
       }
 
-      const key = `${channelUser.id}/${directory}/${randomUUID()}.${file.extname}`
-      newKeys.push(key)
+      await db.transaction(async (trx) => {
+        channelUser.useTransaction(trx)
+        await channelUser.save()
 
-      await storage.put(
-        key,
-        createReadStream(file.tmpPath),
-        `${file.type}/${file.subtype}`
-      )
+        await ChannelLink.query({ client: trx }).where('userId', channelUser.id).delete()
 
-      const oldKey = channelUser[attribute]
-      if (oldKey) oldKeys.push(oldKey)
+        if (links?.length) {
+          const linkTitles = {
+            site: 'Site',
+            linkedin: 'LinkedIn',
+            github: 'GitHub',
+            instagram: 'Instagram',
+            youtube: 'YouTube',
+            outro: 'Outro',
+          }
 
-      channelUser[attribute] = key
+          await ChannelLink.createMany(
+            links.map((link, position) => ({
+              ...link,
+              title: link.type === 'outro' ? (link.title ?? 'Outro') : linkTitles[link.type],
+              userId: channelUser.id,
+              position,
+            })),
+            { client: trx }
+          )
+        }
+      })
+    } catch (error) {
+      await Promise.allSettled(newKeys.map((key) => storage.delete(key)))
+      throw error
     }
 
-    await db.transaction(async (trx) => {
-  channelUser.useTransaction(trx)
-  await channelUser.save()
+    await Promise.allSettled(oldKeys.map((key) => storage.delete(key)))
 
-  await ChannelLink.query({ client: trx })
-    .where('userId', channelUser.id)
-    .delete()
+    session.flash('notification', {
+      title: 'Canal atualizado',
+      message: 'Suas alterações foram salvas com sucesso.',
+      status: 'success',
+    })
 
-  if (links?.length) {
-    const linkTitles = {
-      site: 'Site',
-      linkedin: 'LinkedIn',
-      github: 'GitHub',
-      instagram: 'Instagram',
-      youtube: 'YouTube',
-      outro: 'Outro',
-    }
-
-    await ChannelLink.createMany(
-      links.map((link, position) => ({
-        ...link,
-        title:
-          link.type === 'outro'
-            ? (link.title ?? 'Outro')
-            : linkTitles[link.type],
-        userId: channelUser.id,
-        position,
-      })),
-      { client: trx }
-    )
+    return response.redirect().toRoute('channels.me')
   }
-  })
-  } catch (error) {
-    await Promise.allSettled(newKeys.map((key) => storage.delete(key)))
-    throw error
-  }
-
-  await Promise.allSettled(oldKeys.map((key) => storage.delete(key)))
-
-  session.flash('notification', {
-  title: 'Canal atualizado',
-  message: 'Suas alterações foram salvas com sucesso.',
-  status: 'success',
-  })
-
-  return response.redirect().toRoute('channels.me')
-}
 }

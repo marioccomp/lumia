@@ -13,6 +13,7 @@ import notify from './ui/notification'
 import subscribeButton from './domains/channels/subscribe-button.js'
 import { shareVideo } from './domains/videos/share.js'
 import videoCard from './domains/videos/video-card.js'
+import saveButton from './domains/videos/save-button.js'
 
 Alpine.data('sqlEditor', function () {
   let view = null
@@ -115,6 +116,7 @@ Alpine.store('notify', notify)
 Alpine.data('subscribeButton', subscribeButton)
 Alpine.magic('shareVideo', () => shareVideo)
 Alpine.data('videoCard', videoCard)
+Alpine.data('saveButton', saveButton)
 
 window.Alpine = Alpine
 Alpine.start()

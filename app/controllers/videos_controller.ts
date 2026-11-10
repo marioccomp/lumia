@@ -185,7 +185,10 @@ export default class VideosController {
 
       const video = await Video.query()
         .where('id', id)
-        .whereIn('visibility', ['public', 'unlisted'])
+        .where((q) => {
+          q.whereIn('visibility', ['public', 'unlisted'])
+          if (user) q.orWhere('user_id', user.id)
+        })
         .preload('user')
         .firstOrFail()
 
